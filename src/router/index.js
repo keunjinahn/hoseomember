@@ -95,7 +95,7 @@ const OrderDetails = () =>
 
 
 const HoseoMemberSetting = () =>
-  import(/* webpackChunkName: "pages" */ "@/views/Pages/Account/HoseoMemberSetting.vue");
+  import(/* webpackChunkName: "pages" */ "@/views/HoseoMember/Setting/Setting.vue");
 
 Vue.use(VueRouter);
 
@@ -209,7 +209,7 @@ let accountPages = {
       },
     },
     {
-      path: "/pages/pages/account/hoseomembersetting",
+      path: "/hoseomember/setting/setting",
       name: "HoseoMemberSetting",
       component: HoseoMemberSetting,
       meta: {
@@ -344,6 +344,23 @@ let authIllustrationPages = {
   ],
 };
 
+let hoseoMember = {
+  path: "/",
+  component: DashboardLayout,
+  name: "Account",
+  children: [
+    {
+      path: "/hoseomember/settting/setting",
+      name: "HoseoMemberSetting",
+      component: HoseoMemberSetting,
+      meta: {
+        groupName: "Pages",
+      },
+    },
+
+  ],
+};
+
 const routes = [
   {
     path: "/",
@@ -468,7 +485,10 @@ const routes = [
   authBasicPages,
   authCoverPages,
   authIllustrationPages,
+  hoseoMember
 ];
+
+
 
 const router = new VueRouter({
   routes,
