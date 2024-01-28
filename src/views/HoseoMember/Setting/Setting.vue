@@ -524,13 +524,13 @@
             </v-col>
           </v-row>
         </v-card>
-        <basic-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></basic-info>
-        <intruction-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></intruction-info>
-        <career @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></career>        
-        <provide-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></provide-info>   
-        <abl-title-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></abl-title-info>   
-        <allow-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></allow-info>   
-        <advertisement-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo"></advertisement-info>   
+        <basic-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></basic-info>
+        <intruction-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></intruction-info>
+        <career @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></career>        
+        <provide-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></provide-info>   
+        <abl-title-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></abl-title-info>   
+        <allow-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></allow-info>   
+        <advertisement-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></advertisement-info>   
       </v-col>
     </v-row>
   </v-container>
@@ -590,6 +590,8 @@ export default {
       } catch (ex) {
         console.error('member Update Error:')
         console.error(ex)        
+      } finally {
+        this.loading = true
       }
 
     },
@@ -606,7 +608,7 @@ export default {
           'abl_title_info_json': JSON.stringify(this.memberInfo.abl_title_info_json),
           'allow_info_json': JSON.stringify(this.memberInfo.allow_info_json),
           'advertisement_info_json': JSON.stringify(this.memberInfo.advertisement_info_json),
-      };      
+      }; 
       if (aid) {
           console.log("post")
           try {
@@ -641,54 +643,15 @@ export default {
       }
     },
   },
-  mounted () {
+  mounted() {
+    this.memberInfo = Object.assign(this.$constants.memberInfo)
     this.getMemberInfo()
   },  
   data() {
     return {
-      memberInfo: {
-        id: null,
-        student_id: '20215403',
-        basic_info_json: {
-          name: '',
-          ename: '',
-          phone_number: '',
-          email: '',
-          company: '',
-          department:''
-        },
-        introduction_info_json: {
-          specialty: '',
-          hobby: '',
-          motto: '',
-          motivation:'',
-          goal: '',
-          job: '',
-          figure: '',
-          slide_file:''
-        },
-        career_info_json: {
-          main_career: '',
-        },
-        provide_info_json: {
-          give_info: '',
-          take_info: '',
-        },
-        abl_title_info_json: {
-          abl_title: '',
-        },        
-        
-        allow_info_json: {
-          allow_phone_number: '',
-          allow_email: '',
-          allow_job: '',
-          allow_my_info: '',
-        },
-        advertisement_info_json: {
-          site_url:''
-        }                        
-      },      
+      memberInfo: null,      
       switche: true,
+      loading: false
     };
   },
 };

@@ -232,12 +232,10 @@
   </v-card>
 </template>
 <script>
-import HtmlEditor from "./HtmlEditor.vue";
 export default {
   props: ['memberInfo'],
   name: "basic-info",
   components: {
-    HtmlEditor,
   },  
   methods: {
     async updateMemberInfo() {

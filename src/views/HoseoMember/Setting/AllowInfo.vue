@@ -110,12 +110,10 @@
   </v-card>
 </template>
 <script>
-import HtmlEditor from "./HtmlEditor.vue";
 export default {
   props: ['memberInfo'],
   name: "allow-info",
   components: {
-    HtmlEditor,
   },  
   methods: {
     async updateMemberInfo() {
@@ -132,16 +130,16 @@ export default {
       this.memberInfo.allow_info_json.allow_my_info = (this.myInfo.switchState == true) ? 'Y' : 'N'
     },
     async getMemberData() {
-      let filters = [];
-      filters.push({ name: "student_id", op: "eq", val: this.memberInfo.student_id });
-      let q = JSON.stringify({ filters });
-      let params = { q };
+      // let filters = [];
+      // filters.push({ name: "student_id", op: "eq", val: this.memberInfo.student_id });
+      // let q = JSON.stringify({ filters });
+      // let params = { q };
       
-      let { data } = await this.$http.get("member", { params });    
-      let memberInfo = data.objects.find(v => v.student_id == this.memberInfo.student_id)
-      if (memberInfo.allow_info_json != undefined && memberInfo.allow_info_json.length > 5) {
-        this.memberInfo.allow_info_json = JSON.parse(memberInfo.allow_info_json)  
-      }          
+      // let { data } = await this.$http.get("member", { params });    
+      // let memberInfo = data.objects.find(v => v.student_id == this.memberInfo.student_id)
+      // if (memberInfo.allow_info_json != undefined && memberInfo.allow_info_json.length > 5) {
+      //   this.memberInfo.allow_info_json = JSON.parse(memberInfo.allow_info_json)  
+      // }          
       this.accountSettings[0].switchState = (this.memberInfo.allow_info_json.allow_phone_number == 'Y')? true: false
       this.accountSettings[1].switchState = (this.memberInfo.allow_info_json.allow_email == 'Y')? true: false
       this.accountSettings[2].switchState = (this.memberInfo.allow_info_json.allow_job == 'Y')? true: false

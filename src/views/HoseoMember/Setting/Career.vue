@@ -83,7 +83,7 @@
   </v-card>
 </template>
 <script>
-import HtmlEditor from "./HtmlEditor.vue";
+import HtmlEditor from "../Components/HtmlEditor.vue";
 export default {
   props: ['memberInfo'],
   name: "career",
