@@ -18,7 +18,7 @@
             </span>            
           </div>          
       
-          <html-editor @input="updateSiteUrl" :value="memberInfo.advertisement_info_json.site_url"></html-editor>
+          <html-editor :toolbar_show="true" @input="updateSiteUrl" :value="memberInfo.advertisement_info_json.site_url"></html-editor>
         </v-col>                       
         <v-btn
           color="#cb0c9f"

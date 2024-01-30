@@ -20,6 +20,7 @@ import vuetify from "./plugins/vuetify";
 import DashboardPlugin from "./plugins/dashboard-plugin";
 import { httpMember } from './plugins/http'
 import Constants from "./util/constant"
+import Utils from "./util/utils"
 Vue.config.productionTip = false;
 
 // Photoswipe Gallery
@@ -28,6 +29,7 @@ Vue.use(Photoswipe);
 
 // plugin setup
 Vue.use(DashboardPlugin);
+Vue.use(Utils)
 Vue.prototype.$http = httpMember
 Vue.prototype.$constants = Constants
 new Vue({

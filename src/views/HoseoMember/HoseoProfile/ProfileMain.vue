@@ -1,11 +1,7 @@
 <template>
   <div>
     <v-container fluid class="px-6 py-0">
-      <v-row class="mt-8">
-        <v-col cols="12">
-          <profile-component></profile-component>
-        </v-col>
-      </v-row>
+      <profile-component :student_id="$utils.myMemberInfo.student_id"></profile-component>
     </v-container>
   </div>
 </template>
@@ -17,5 +13,7 @@ export default {
   components: {
     ProfileComponent,
   },
+  mounted() {
+  },   
 };
 </script>

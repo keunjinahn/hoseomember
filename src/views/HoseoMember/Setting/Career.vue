@@ -57,7 +57,7 @@
             </span>                      
 
           </div>        
-          <html-editor @input="updateMainCareer" :value="memberInfo.career_info_json.main_career"></html-editor>
+          <html-editor :toolbar_show="true" @input="updateMainCareer" :value="memberInfo.career_info_json.main_career"></html-editor>
         </v-col>       
               
         <v-btn

@@ -1,5 +1,5 @@
 <template>
-  <v-app-bar
+  <!-- <v-app-bar
     :color="background"
     height="auto"
     class="mt-5 px-0 mx-6 border-radius-xl toolbar-content-padding-y-none"
@@ -267,7 +267,7 @@
         </v-menu>
       </v-col>
     </v-row>
-  </v-app-bar>
+  </v-app-bar> -->
 </template>
 <script>
 export default {

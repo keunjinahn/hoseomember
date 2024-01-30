@@ -587,6 +587,8 @@ export default {
           this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)  
         }                 
         this.memberInfo.id = memberInfo.id
+        this.$utils.myMemberInfo.name = this.memberInfo.basic_info_json.name
+        
       } catch (ex) {
         console.error('member Update Error:')
         console.error(ex)        
@@ -644,7 +646,8 @@ export default {
     },
   },
   mounted() {
-    this.memberInfo = Object.assign(this.$constants.memberInfo)
+    this.memberInfo = Object.assign(this.$utils.memberInfo)
+    this.memberInfo.student_id = this.$utils.myMemberInfo.student_id
     this.getMemberInfo()
   },  
   data() {

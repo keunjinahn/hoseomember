@@ -15,7 +15,7 @@
             </span>            
           </div>          
       
-          <html-editor @input="updateAblTitle" :value="memberInfo.abl_title_info_json.abl_title"></html-editor>
+          <html-editor :toolbar_show="true" @input="updateAblTitle" :value="memberInfo.abl_title_info_json.abl_title"></html-editor>
         </v-col>     
         <v-btn
           color="#cb0c9f"

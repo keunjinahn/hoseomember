@@ -32,7 +32,7 @@
             >
           </div>          
       
-          <html-editor @input="updateGiveInfo" :value="memberInfo.provide_info_json.give_info"></html-editor>
+          <html-editor :toolbar_show="true" @input="updateGiveInfo" :value="memberInfo.provide_info_json.give_info"></html-editor>
         </v-col>    
         <v-col cols="12">
           <h6 class="text-typo mb-4 text-sm">
@@ -55,7 +55,7 @@
             </span>
           </div>          
       
-          <html-editor @input="updateTakeInfo" :value="memberInfo.provide_info_json.take_info"></html-editor>
+          <html-editor :toolbar_show="true" @input="updateTakeInfo" :value="memberInfo.provide_info_json.take_info"></html-editor>
         </v-col>         
         <v-btn
           color="#cb0c9f"

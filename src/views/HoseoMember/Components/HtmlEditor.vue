@@ -1,7 +1,7 @@
 <template>
   <div
     class="quill mt-3"
-  >
+  > 
     <div :id="toolbarId" :class="{'toolbar-hide':toolbar_show == false}">
       <div class="ql-formats" v-show="toolbar_show">
         <button class="ql-bold"></button>
@@ -63,7 +63,7 @@ export default {
         this.content = html;
         this.$emit("input", this.content);
       });
-      this.editor.enable(!toolbar_show);
+      // this.editor.enable(!this.toolbar_show);
     },
     pasteHTML() {
       if (!this.editor) {
