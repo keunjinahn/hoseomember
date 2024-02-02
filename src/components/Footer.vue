@@ -1,5 +1,5 @@
 <template>
-  <span>
+  <!-- <span>
     <template v-if="auth">
       <v-footer color="transparent" class="mt-10 pt-10 pb-5">
         <v-card class="flex" color="transparent">
@@ -103,7 +103,7 @@
           </v-card-text>
         </v-card>
       </v-footer>
-    </template>
+    </template> -->
   </span>
 </template>
 <script>

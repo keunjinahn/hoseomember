@@ -18,7 +18,7 @@
         <router-view></router-view>
       </fade-transition>
     </v-main>
-    <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+    <!-- <content-footer v-if="!$route.meta.hideFooter"></content-footer> -->
   </v-app>
 </template>
 <script>

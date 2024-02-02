@@ -59,57 +59,44 @@
 
           <template v-slot:item.name="{ item }">
             <div class="d-flex align-center">
-              <span class="text-sm font-weight-normal text-body">
-                {{ item.name }}
+              <v-avatar width="32" height="32" class="shadow border-radius-lg">
+                <img v-if="item.profile_image"
+                  :src="$utils.parse_img_data(item.profile_image)"
+                  alt="Avatar"
+                  class="border-radius-lg"
+                />
+                <img v-else
+                  src="@/assets/img/hoseomember/vface.jpg"
+                  alt="Avatar"
+                  class="border-radius-lg"
+                />                
+              </v-avatar>              
+              <span class="text-sm font-weight-normal text-body text-left-margin-5">
+                {{ item.name}}
               </span>
             </div>
           </template>
 
           <template v-slot:item.email="{ item }">
             <span class="text-sm font-weight-normal text-body">
-              {{ item.email }}
+              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y')? item.email :'****'}}
             </span>
           </template>
 
-          <template v-slot:item.age="{ item }">
+          <template v-slot:item.phone_number="{ item }">
             <span class="text-sm font-weight-normal text-body">
-              {{ item.age }}
+              {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y')? item.phone_number :'****'}}
             </span>
           </template>
-
-          <template v-slot:item.salary="{ item }">
-            <span class="text-sm font-weight-normal text-body">
-              {{ item.salary }}
-            </span>
-          </template>
-
           <template v-slot:item.actions="{ item }">
             <v-btn
+              outlined
+              color="#fff"
+              class="font-weight-bolder bg-gradient-primary py-4 px-7"
+              small
               @click="showProfileDialog(item)"
-              icon
-              elevation="0"
-              :ripple="false"
-              height="28"
-              min-width="36"
-              width="36"
-              class="btn-ls me-2 my-2 rounded-sm"
-              color="#67748e"
             >
-              <v-icon size="12">ni-ruler-pencil</v-icon>
-            </v-btn>
-
-            <v-btn
-              @click="deleteItem(item)"
-              icon
-              elevation="0"
-              :ripple="false"
-              height="28"
-              min-width="36"
-              width="36"
-              class="btn-ls me-2 my-2 rounded-sm"
-              color="#67748e"
-            >
-              <v-icon size="12">ni-fat-remove text-lg</v-icon>
+              <v-icon size="12">fa-solid fa-address-card pe-2</v-icon> 프로필보기
             </v-btn>
           </template>
         </v-data-table>
@@ -155,8 +142,12 @@
     </v-card>
 
     <v-dialog v-model="profileDialog.show" max-width="1600px">
-      
+      <v-btn fab x-small dark depressed color="grey darken-1" class="school-detail-close" @click="profileDialog.show=false">
+        <!-- <v-icon size="12">fas fa-times</v-icon>X -->
+         <v-icon size="12">fas fa-times</v-icon>
+      </v-btn>      
       <v-card class="card-shadow border-radius-xl">
+        
         <profile-component :student_id="this.profileDialog.student_id" :key="this.profileDialog.student_id"></profile-component>
       </v-card>
     </v-dialog>
@@ -256,7 +247,7 @@ export default {
             align: "start",
             cellClass: "border-bottom",
             sortable: false,
-            value: "student_name",
+            value: "name",
             class: "text-secondary font-weight-bolder opacity-7 border-bottom",
           },
           {
@@ -271,7 +262,7 @@ export default {
           },
           {
             text: "전화번호",
-            value: "phone-number",
+            value: "phone_number",
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
@@ -385,3 +376,16 @@ export default {
   },
 };
 </script>
+<style lang="scss" scoped>
+.school-detail-close {
+  position: absolute;
+  top: 60px; right: 130px;
+  z-index: 10;
+}
+.school-detail-container {
+  position: relative;
+}
+.text-left-margin-5 {
+  margin-left:5px;
+}
+</style>

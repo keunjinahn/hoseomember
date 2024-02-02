@@ -25,14 +25,26 @@ const uitls = new Vue({
         scrollToTop() {
             // window.scrollTo(x좌표, y좌표)
             window.scrollTo(0, 0);
-        }
+        },
+        isMyProfile() {
+            if (this.myMemberInfo.student_id == this.memberInfo.student_id)
+                return true
+            return false
+        },
+        parse_img_data(html_img_data) {
+            if (!html_img_data || html_img_data == null || html_img_data == undefined || html_img_data == '')
+                return "@/assets/img/hoseomember/vface.jpg"
+            var img_data = html_img_data.slice(13, html_img_data.length - 6)
+            return img_data
+        },
     },
     created() {
     },
     data() {
         return {
+            user: null,
             myMemberInfo: {
-                student_id: '20215403',
+                student_id: '',
                 name: ''
             },
             memberInfo: {
@@ -44,7 +56,8 @@ const uitls = new Vue({
                     phone_number: '',
                     email: '',
                     company: '',
-                    department: ''
+                    department: '',
+                    profile_image: ''
                 },
                 introduction_info_json: {
                     specialty: '',

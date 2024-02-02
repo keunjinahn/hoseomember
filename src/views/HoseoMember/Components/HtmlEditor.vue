@@ -4,15 +4,21 @@
   > 
     <div :id="toolbarId" :class="{'toolbar-hide':toolbar_show == false}">
       <div class="ql-formats" v-show="toolbar_show">
-        <button class="ql-bold"></button>
-        <button class="ql-italic"></button>
-        <button class="ql-underline"></button>
-        <button class="ql-link"></button>
-        <button class="ql-blockquote"></button>
-        <button class="ql-code"></button>
-        <button class="ql-image"></button>
-        <button type="button" class="ql-list" value="ordered"></button>
-        <button type="button" class="ql-list" value="bullet"></button>
+        <div v-if="only_image==false">
+          <button class="ql-bold"></button>
+          <button class="ql-italic"></button>
+          <button class="ql-underline"></button>
+          <button class="ql-link"></button>
+          <button class="ql-blockquote"></button>
+          <button class="ql-code"></button>
+          <button class="ql-image"></button>
+          <button type="button" class="ql-list" value="ordered"></button>
+          <button type="button" class="ql-list" value="bullet"></button>
+        </div>
+        <div v-else>
+          <button class="ql-image"></button>
+
+        </div>        
       </div>
     </div>
     <div :id="editorId" :name="name" class="" ref="editor"></div>
@@ -25,12 +31,16 @@ export default {
   props: {
     value: {
       type: String,
-      default: "Some initial <b>bold</b> text",
+      default: "",
     },
     toolbar_show: {
       type: Boolean,
       default:true,
     },  
+    only_image: {
+      type: Boolean,
+      default:false,
+    },      
     name: String,
   },
   data() {

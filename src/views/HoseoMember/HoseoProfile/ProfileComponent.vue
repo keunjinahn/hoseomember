@@ -68,7 +68,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">전화번호:</strong>
-                              &nbsp; {{this.memberInfo.basic_info_json.phone_number}}
+                              &nbsp; {{(memberInfo.allow_info_json.allow_phone_number == 'Y')? memberInfo.basic_info_json.phone_number:'***'}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>
@@ -76,7 +76,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">이메일:</strong>
-                              &nbsp; {{this.memberInfo.basic_info_json.email}}
+                              &nbsp; {{(memberInfo.allow_info_json.allow_email == 'Y')? memberInfo.basic_info_json.email:'***'}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>
@@ -96,7 +96,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">특기:</strong>
-                              &nbsp; {{this.memberInfo.introduction_info_json.specialty}}
+                              &nbsp; {{memberInfo.introduction_info_json.specialty}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>
@@ -104,7 +104,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">취미:</strong>
-                              &nbsp; {{this.memberInfo.introduction_info_json.hobby}}
+                              &nbsp; {{memberInfo.introduction_info_json.hobby}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>         
@@ -112,7 +112,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">좌우명:</strong>
-                              &nbsp; {{this.memberInfo.introduction_info_json.motto}}
+                              &nbsp; {{memberInfo.introduction_info_json.motto}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>               
@@ -120,7 +120,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">현재직업:</strong>
-                              &nbsp; {{this.memberInfo.introduction_info_json.job}}
+                              &nbsp; {{memberInfo.introduction_info_json.job}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>                             
@@ -128,7 +128,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">대학원 진학 동기:</strong>
-                              &nbsp;{{this.memberInfo.introduction_info_json.motivation}}
+                              &nbsp;{{memberInfo.introduction_info_json.motivation}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>
@@ -136,7 +136,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">대학원 과정에서 이루고자 하는 목표:</strong>
-                              &nbsp;{{this.memberInfo.introduction_info_json.goal}}
+                              &nbsp;{{memberInfo.introduction_info_json.goal}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>       
@@ -144,7 +144,7 @@
                           <v-list-item-content class="py-0">
                             <div class="ms-4 text-body text-sm">
                               <strong class="text-dark">졸업 후에 원하는 자신의 모습:</strong>
-                              &nbsp;{{this.memberInfo.introduction_info_json.figure}}
+                              &nbsp;{{memberInfo.introduction_info_json.figure}}
                             </div>
                           </v-list-item-content>
                         </v-list-item>                                          
@@ -266,11 +266,16 @@
           <v-row :key="student_id" >
             <v-col cols="auto">
               <v-avatar width="74" height="74" class="shadow border-radius-lg">
-                <img
-                  src="@/assets/img/bruce-mars.jpg"
+                <img v-if="this.memberInfo.basic_info_json.profile_image"
+                  :src="$utils.parse_img_data(this.memberInfo.basic_info_json.profile_image)"
                   alt="Avatar"
                   class="border-radius-lg"
                 />
+                 <img v-else
+                  src="@/assets/img/hoseomember/vface.jpg"
+                  alt="Avatar"
+                  class="border-radius-lg"
+                />               
               </v-avatar>
             </v-col>
             <v-col cols="auto" class="my-auto">
@@ -279,11 +284,19 @@
                   {{this.memberInfo.basic_info_json.name}}
                 </h5>
                 <p class="mb-0 font-weight-bold text-body text-sm">
-                  {{this.memberInfo.basic_info_json.department + '/' + this.memberInfo.basic_info_json.company}}
+                 <span>{{this.memberInfo.basic_info_json.department + '/' + this.memberInfo.basic_info_json.company}}</span>
+                 <span>
+                  &nbsp; <v-icon size="16" class="me-1">fa-solid fa-phone</v-icon>       
+                  {{(memberInfo.allow_info_json.allow_phone_number == 'Y')? memberInfo.basic_info_json.phone_number:'***'}}         
+                 </span>
+                 <span>
+                  &nbsp; <v-icon size="16" class="me-1">fa-regular fa-envelope</v-icon>       
+                  {{(memberInfo.allow_info_json.allow_email == 'Y')? memberInfo.basic_info_json.email:'***'}}
+                 </span>                 
                 </p>
               </div>
             </v-col>
-            <v-col cols="10" >
+            <v-col>
               <div class="pos-right">
                 <v-btn
                   :ripple="false"
@@ -293,9 +306,7 @@
                   simple
                   @click="openMessageInfoPopup"
                 >
-                  <v-icon size="16" class="me-1"
-                    >fas fa-envelope me-1</v-icon
-                  >
+                  <v-icon size="16" class="me-1">fas fa-envelope me-1</v-icon>
                   편지 쓰기
                 </v-btn>    
               </div>
@@ -305,36 +316,8 @@
         </v-card>  
         <p></p>
         <v-row >
-          <v-col lg="4" md="6" cols="12" >
+          <v-col :cols="page_type" >
             <v-card class="card-shadow border-radius-xl h-100" >
-              <div class="px-4 pt-4">
-                <h3 class="mb-0 text-h6 text-typo font-weight-bold">
-                  * 내 프로필 기본 정보
-                </h3>
-              </div>
-              <div class="px-2 py-1">
-                <hr class="horizontal gray-light mt-1 mb-1" />
-                <v-list>
-                  <v-list-item-group class="border-radius-sm">
-                    <v-list-item :ripple="false" class="px-0 border-radius-sm">
-                      <v-list-item-content class="py-0">
-                        <div class="ms-4 text-body text-sm">
-                          <strong class="text-dark">전화번호:</strong>
-                          &nbsp; {{this.memberInfo.basic_info_json.phone_number}}
-                        </div>
-                      </v-list-item-content>
-                    </v-list-item>
-                    <v-list-item :ripple="false" class="px-0 border-radius-sm">
-                      <v-list-item-content class="py-0">
-                        <div class="ms-4 text-body text-sm">
-                          <strong class="text-dark">이메일:</strong>
-                          &nbsp; {{this.memberInfo.basic_info_json.email}}
-                        </div>
-                      </v-list-item-content>
-                    </v-list-item>
-                  </v-list-item-group>
-                </v-list>
-              </div>              
               <div class="px-4 pt-4">
                 <h3 class="mb-0 text-h6 text-typo font-weight-bold">
                   * 자기소개
@@ -403,10 +386,6 @@
                   </v-list-item-group>
                 </v-list>
               </div>
-            </v-card>
-          </v-col>
-          <v-col lg="4" md="6" cols="12">
-            <v-card class="card-shadow border-radius-xl h-100" >
               <div class="px-4 pt-4">
                 <h6 class="mb-0 text-h6 text-typo font-weight-bold">
                   * 주요경력
@@ -416,7 +395,11 @@
                 <p class="text-sm text-body">
                   <html-editor  :toolbar_show="false" :value="memberInfo.career_info_json.main_career"></html-editor>
                 </p>
-              </div>
+              </div>              
+            </v-card>
+          </v-col>
+          <v-col :cols="page_type" >
+            <v-card class="card-shadow border-radius-xl h-100" >
               <div class="px-4 pt-4">
                 <h6 class="mb-0 text-h6 text-typo font-weight-bold">
                   * 제공 가능한 정보(Give)
@@ -440,15 +423,62 @@
               </div>              
             </v-card>
           </v-col>
-          <v-col lg="4" cols="12">
+          <v-col :cols="page_type" v-show="$utils.isMyProfile()">
             <v-card class="card-shadow border-radius-xl h-100">
               <div class="px-4 pt-4">
                 <h6 class="mb-0 text-h6 text-typo font-weight-bold">
-                  원우로 부터 수신된 메시지
+                  수신 메시지
                 </h6>
               </div>
               <div class="px-4 py-4">
-                <v-list>
+                <v-data-table
+                  :headers="table.headers"
+                  :items="table.messages"
+                  class="table"
+                  :page.sync="page"
+                  hide-default-footer
+                  @page-count="pageCount = $event"
+                  :items-per-page="itemsPerPage"
+                  mobile-breakpoint="0"
+                >         
+                  <template v-slot:item="row">
+                    <tr class="clickable-row" @click="onRecvMessageOpen(row.item)">
+                      <td>
+                        <div class="table-item-t-size">
+                          {{row.item.send_name}}
+                        </div>
+                      </td>
+                      <td >
+                        <div class="table-item-t-size">
+                          {{row.item.message.slice(0,20) + "..."}}
+                        </div>
+                      </td>
+                      <td >
+                        <div class="table-item-t-size">
+                          {{row.item.created.slice(0,10)}}
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                </v-data-table>       
+                <v-card-actions class="card-padding">
+                  <v-row>
+                    <v-col cols="6" lg="3" class="d-flex align-center">
+                    </v-col>
+                    <v-col cols="6" class="ml-auto d-flex justify-end">
+                      <v-pagination
+                        prev-icon="fa fa-angle-left"
+                        next-icon="fa fa-angle-right"
+                        class="pagination"
+                        color="#cb0c9f"
+                        v-model="page"
+                        :length="pageCount"
+                        circle
+                      ></v-pagination>
+                    </v-col>
+                  </v-row>
+                </v-card-actions>            
+                <!-- <v-list>
                   <v-list-item-group class="border-radius-sm">
                     <v-list-item
                       :ripple="false"
@@ -498,13 +528,13 @@
                       </v-list-item-content>
                     </v-list-item>
                   </v-list-item-group>
-                </v-list>
+                </v-list> -->
               </div>
             </v-card>
           </v-col>
         </v-row>
         <v-row>
-          <v-col cols="8">
+          <v-col cols="6">
             <v-card class="card-shadow border-radius-xl min-height-300">
               <div class="px-4 pt-4">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">ABL 주제</h6>
@@ -514,7 +544,7 @@
               </div>
             </v-card>
           </v-col>
-          <v-col cols="4">
+          <v-col cols="6">
             <v-card class="card-shadow border-radius-xl  min-height-300">
               <div class="px-4 pt-4">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">광고 및 소개</h6>
@@ -526,7 +556,7 @@
           </v-col>      
         </v-row>
         <v-dialog v-model="messageInfo.show" max-width="500px">
-          <v-card class="card-shadow card-padding border-radius-xl">
+          <v-card class="card-shadow card-padding border-radius-xl" v-if="messageInfo.type == 'WRITE'" >
             <v-card-title class="pt-0 text-h5 text-typo justify-center"
               >원우에게 보낼 메시지를 입력하세요~</v-card-title
             >
@@ -584,8 +614,13 @@
                   <v-col sm="12" cols="12" >
                      <label class="text-xs text-typo font-weight-bolder ms-1"
                       >보낼 메시지</label
-                    >                    
-                    <html-editor class="msg-box-h" placeholder="여기에 메시지를 입력하세요..." :toolbar_show="true" @input="updateMessageInfo" :value="messageInfo.sendMessage"></html-editor>
+                    >
+                    <textarea
+                      type="text"
+                      class="abl-input"
+                      placeholder="여기에 메시지를 입력하세요..."
+                      v-model="messageInfo.message"
+                    ></textarea>                                 
                   </v-col>
                 </v-row>
               </div>
@@ -626,6 +661,76 @@
               <v-spacer></v-spacer>
             </v-card-actions>
           </v-card>
+          <v-card class="card-shadow card-padding border-radius-xl" v-else >
+            <v-card-title class="pt-0 text-h5 text-typo justify-center"
+              >받은메시지</v-card-title
+            >
+            <v-card>
+              <div>
+                <v-row class="mt-2">
+                  <v-col sm="12" cols="12">
+                    <label class="text-xs text-typo font-weight-bolder ms-1"
+                      >보낸사람</label
+                    >
+                    <v-text-field
+                      hide-details
+                      outlined
+                      color="rgba(0,0,0,.6)"
+                      light
+                      placeholder="보내는이"
+                      class="
+                        font-size-input
+                        placeholder-lighter
+                        text-light-input
+                        border border-radius-md
+                        mt-2
+                      "
+                      disabled
+                      v-model="messageInfo.sendName"
+                    >
+                    </v-text-field>
+                  </v-col>
+                  
+                </v-row>
+
+                <v-row class="mt-2">
+                 
+                  <v-col sm="12" cols="12" >
+                     <label disabled class="text-xs text-typo font-weight-bolder ms-1"
+                      >받은 메시지</label
+                    >      
+                    <textarea
+                      type="text"
+                      class="abl-input"
+                      placeholder="여기에 메시지를 입력하세요..."
+                      v-model="messageInfo.message"
+                    ></textarea>                                 
+                  </v-col>
+                </v-row>
+              </div>
+            </v-card>            
+            <v-card-actions class="pb-0">
+              <v-spacer></v-spacer>
+              <v-btn
+                @click="messageInfo.show=false"
+                elevation="0"
+                :ripple="false"
+                height="43"
+                class="
+                  font-weight-bold
+                  text-capitalize
+                  btn-ls
+                  bg-gradient-light
+                  py-3
+                  px-6
+                "
+                >Cancel</v-btn
+              >
+
+              
+              <v-spacer></v-spacer>
+            </v-card-actions>
+          </v-card>          
         </v-dialog>         
       </div>
     </v-container>
@@ -638,11 +743,12 @@
 </template>
 <script>
 import HtmlEditor from "../Components/HtmlEditor.vue";
+import moment from "moment";
 export default {
   name: "Profile-Overview",
   props: ['student_id'],  
   components: {
-    HtmlEditor
+    HtmlEditor,
   },    
   methods: {
     async getMemberInfo() {
@@ -679,6 +785,7 @@ export default {
         this.memberInfo.id = memberInfo.id
         if(this.$utils.myMemberInfo.student_id == memberInfo.student_id)
           this.$utils.myMemberInfo.name = this.memberInfo.basic_info_json.name
+
       } catch (ex) {
         console.error('member Update Error:')
         console.error(ex)
@@ -698,24 +805,119 @@ export default {
       this.messageInfo.show = true
       this.messageInfo.sendStudentId = this.$utils.myMemberInfo.student_id
       this.messageInfo.recvStudentId = this.student_id
-      this.messageInfo.sendMessage = ''
+      this.messageInfo.message = ''
       this.messageInfo.sendName = this.$utils.myMemberInfo.name
       this.messageInfo.recvName = this.memberInfo.basic_info_json.name
+      this.messageInfo.type = 'WRITE'
     },
     updateMessageInfo(contents) {
-      this.messageInfo.sendMessage = contents
-    }
+      this.messageInfo.message = contents
+    },
+    async sendMessage() {
+      var params = {
+        "created": moment().format("YYYY-MM-DD HH:mm:ss"),
+        "send_student_id": this.messageInfo.sendStudentId,
+        "recv_student_id": this.messageInfo.recvStudentId,
+        "send_name": this.messageInfo.sendName,
+        "recv_name": this.messageInfo.recvName,
+        "message": this.messageInfo.message,
+        
+      }
+      try {
+        let new_res = await this.$http.post('message', params)
+        if (new_res.status == 202) {
+          this.$utils.$emit("modal-alert","잘못된 호출입니다.");                  
+          return
+        }
+        this.$utils.$emit(
+          "modal-alert",
+          "메시지가 전송되었습니다."
+        );           
+      }
+      catch (ex) {
+        this.$utils.$emit("modal-alert","신규입력 Error:" + ex.message);                  
+          
+      }
+      finally {
+        this.messageInfo.show = false
+     
+      }      
 
+    },
+    async geMessageList() {
+      try {
+        this.table.loading = true
+        // let filters_or = []
+        // let filters_and = []
+        // let order_by = []
+        // order_by.push({field: 'id', direction: 'desc'})
+        // filters_and.push({name:'recv_student_id', op:'eq', val:this.$utils.myMemberInfo.student_id})
+        // let q = {
+        //     filters: [{or: filters_or}, {and: filters_and}],
+        //     order_by
+        // }
+        // let params = {
+        //     q: q,
+        //     results_per_page: this.itemsPerPage,
+        //     page: this.page,
+        // };
+
+        let order_by = []
+        order_by.push({field: 'id', direction: 'desc'})
+        let q = JSON.stringify({
+          filters: [{ name: "recv_student_id", op: "eq", val: this.$utils.myMemberInfo.student_id }],
+          order_by
+        });
+        let params = {
+            q: q,
+            results_per_page: 1000,
+            page: this.page,
+        };
+
+        let { data } = await this.$http.get("message", { params });     
+        this.table.total = data.num_results
+        this.table.messages = data.objects.map((v, i) => {
+            v._index = i + (this.page - 1) * this.itemsPerPage + 1;
+            return v;
+        });
+        this.pageCount = (data.num_results / this.itemsPerPage) + 1
+        this.table.loading = false
+      } catch (ex) {
+        console.error('member Update Error:')
+        console.error(ex)        
+      }      
+    },
+    onRecvMessageOpen(item) {
+      this.messageInfo.type = 'READ'
+      this.messageInfo.show = true
+      this.messageInfo.sendName = item.send_name
+      this.messageInfo.message = item.message
+    }
   },
   mounted() {
+      
     this.show = false
     this.memberInfo.student_id = this.student_id
+    this.page_type = (this.$utils.isMyProfile() == true) ? 4 : 6;
     this.getMemberInfo()
+    if(this.$utils.isMyProfile())
+      this.geMessageList()
     
     
   },    
+  computed: {
+    pages() {
+      return this.pagination.rowsPerPage
+        ? Math.ceil(this.table.total / this.pagination.rowsPerPage)
+        : 0;
+    },
+  },  
   data: function () {
     return {
+      page_type:6,
+      page: 1,
+      pageCount: 0,
+      itemsPerPage: 10,      
       scrollInterval:null,
       show: false,
       memberInfo: this.$utils.memberInfo,
@@ -726,7 +928,34 @@ export default {
         recvStudentId: null,
         sendName: '',
         recvName:'',
-        sendMessage:''
+        message: '',
+        type:'READ'
+      },
+      table: {
+        messages: [],
+        loading: false,
+        total: 0,
+        options: {},
+        headers: [
+          {
+            text: "원우",
+            align: "start",
+            cellClass: "border-bottom",
+            sortable: false,
+            value: "send_name",
+            class: "mb-0 text-sm text-typo font-weight-bolder opacity-7 border-bottom",
+          },
+          {
+            text: "메시지",
+            value: "message",
+            class: "mb-0  text-sm text-typo font-weight-bolder opacity-7",
+          },
+          {
+            text: "보낸일",
+            value: "created",
+            class: "mb-0  text-sm text-typo font-weight-bolder opacity-7",
+          },
+        ],        
       },
       accountSettings: [
         {
@@ -922,6 +1151,31 @@ $control-width: 170px;
 .msg-box-h {
   min-height: 200px;
 }
+.abl-input {
+    padding: 5px 5px;
+    width: 100%;
+    outline: none;
+    font-size: 12px;
+    border : 1px solid #c7c3bd;
+    min-height:200px;
+    &:hover, &:focus {
+        background-color: #ffffff;
+    }
+}
+.table-item-t-size{
+  font-size: 10px;
+}
+.clickable-row {
+  user-select: none;
+  cursor: pointer;
+
+}
+tr {
+  &:hover, &:focus {
+      border:1px solid blue;
+  }  
+}
+
 #wrap {
     	width: 100%;
         height: 100vh;

@@ -1,5 +1,6 @@
 <template>
   <v-container fluid class="py-6">
+    <input type="text" ref="idInput"  style="border: 0px solid;width:0px;"/>
     <v-row>
       <v-col lg="4" sm="8">
         <v-tabs background-color="transparent" class="text-left">
@@ -477,51 +478,30 @@
           <v-row>
             <v-col cols="auto">
               <v-avatar width="74" height="74" class="shadow border-radius-lg">
-                <img
-                  src="@/assets/img/bruce-mars.jpg"
+                <img v-if="this.memberInfo.basic_info_json.profile_image"
+                  :src="$utils.parse_img_data(this.memberInfo.basic_info_json.profile_image)"
+                  alt="Avatar"
+                  class="border-radius-lg v-face-cursor"
+                  @click="profileDialog.show=true"
+                />
+                <img v-else
+                  src="@/assets/img/hoseomember/vface.jpg"
                   alt="Avatar"
                   class="border-radius-lg"
-                />
+                />                   
               </v-avatar>
             </v-col>
             <v-col cols="auto" class="my-auto">
               <div class="h-100">
                 <h5 class="mb-1 text-h5 text-typo font-weight-bold">
-                  안근진
+                  {{this.memberInfo.basic_info_json.name}}
                 </h5>
                 <p class="mb-0 font-weight-bold text-body text-sm">
-                  CEO / 시성모바일
+                  {{this.memberInfo.basic_info_json.department + '/' + this.memberInfo.basic_info_json.company}}
                 </p>
               </div>
             </v-col>
-            <v-col
-              lg="4"
-              md="6"
-              class="my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3"
-            >
-              <div class="d-flex align-center">
-                <p
-                  class="mb-0 text-body text-xs ms-auto"
-                  v-if="switche == true"
-                >
-                  Switch to invisible
-                </p>
-                <p
-                  class="mb-0 text-body text-xs ms-auto"
-                  v-if="switche == false"
-                >
-                  Switch to visible
-                </p>
-                <v-switch
-                  :ripple="false"
-                  class="mt-0 pt-0 ms-3 switch"
-                  v-model="switche"
-                  hide-details
-                  color="#3a416ff2"
-                  inset
-                ></v-switch>
-              </div>
-            </v-col>
+            
           </v-row>
         </v-card>
         <basic-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></basic-info>
@@ -533,6 +513,52 @@
         <advertisement-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></advertisement-info>   
       </v-col>
     </v-row>
+    <v-dialog v-model="profileDialog.show" max-width="300px">
+      <v-card class="card-shadow card-padding border-radius-xl">
+        <v-card-title class="pt-0 text-h5 text-typo justify-center"
+          >프로필 사진입력</v-card-title
+        >
+        <v-card>
+          <html-editor :only_image="true" :toolbar_show="true" @input="updateProfileImage" :value="memberInfo.basic_info_json.profile_image"></html-editor>
+        </v-card>            
+        <v-card-actions class="pb-0">
+          <v-spacer></v-spacer>
+          <v-btn
+            @click="profileDialog.show=false"
+            elevation="0"
+            :ripple="false"
+            height="43"
+            class="
+              font-weight-bold
+              text-capitalize
+              btn-ls
+              bg-gradient-light
+              py-3
+              px-6
+            "
+            >Cancel</v-btn
+          >
+
+          <v-btn
+            @click="closePopupProfile()"
+            elevation="0"
+            :ripple="false"
+            height="43"
+            class="
+              font-weight-bold
+              text-capitalize
+              btn-ls btn-primary
+              bg-gradient-primary
+              py-3
+              px-6
+            "
+            >저장</v-btn
+          >
+          <v-spacer></v-spacer>
+        </v-card-actions>
+      </v-card>
+               
+    </v-dialog> 
   </v-container>
 </template>
 <script>
@@ -543,7 +569,7 @@ import ProvideInfo from "./ProvideInfo.vue";
 import AblTitleInfo from "./AblTitleInfo.vue";
 import AllowInfo from "./AllowInfo.vue";
 import AdvertisementInfo from "./AdvertisementInfo.vue";
-
+import HtmlEditor from "../Components/HtmlEditor.vue";
 export default {
   
   name: "Settings",
@@ -554,9 +580,11 @@ export default {
     ProvideInfo,
     AblTitleInfo,
     AllowInfo,
-    AdvertisementInfo
+    AdvertisementInfo,
+    HtmlEditor
   },
   methods: {
+
     async getMemberInfo() {
       try {
         let filters = [];
@@ -594,9 +622,16 @@ export default {
         console.error(ex)        
       } finally {
         this.loading = true
+        this.switchChange()
       }
 
     },
+    switchChange() {
+      
+      setTimeout(() => {
+        this.$refs.idInput.focus()
+      }, 1000);
+    },    
     async updateMemberInfo () {
       // validate
       let results = []
@@ -612,18 +647,20 @@ export default {
           'advertisement_info_json': JSON.stringify(this.memberInfo.advertisement_info_json),
       }; 
       if (aid) {
-          console.log("post")
-          try {
-              await this.$http.patch(`member/${aid}`, data)
-          }
-          catch (ex) {
-              console.error('member Update Error:')
-              console.error(ex)
-              results.push('member Update Error:')
-              results.push(ex.message)
-          }
-          finally {
-          }         
+        console.log("post")
+        try {
+          await this.$http.patch(`member/${aid}`, data)
+          this.$utils.$emit("modal-alert", "저장하였습니다.");
+        }
+        catch (ex) {
+          console.error('member Update Error:')
+          console.error(ex)
+          results.push('member Update Error:')
+          results.push(ex.message)
+        }
+        finally {
+
+        }
       }
       else {
 
@@ -635,27 +672,45 @@ export default {
                 return
               }
               this.memberInfo.id = new_res.data.id
+              this.$utils.$emit("modal-alert","저장하였습니다.");    
           }
           catch (ex) {
               results.push('신규입력 Error:')
               results.push(ex.message)
           }
           finally {
+            
           }
       }
     },
+    updateProfileImage(contents) {
+      this.memberInfo.basic_info_json.profile_image = contents
+    },
+    closePopupProfile() {
+      this.updateMemberInfo()
+      this.profileDialog.show=false
+    }
   },
   mounted() {
+    this.getMemberInfo()
     this.memberInfo = Object.assign(this.$utils.memberInfo)
     this.memberInfo.student_id = this.$utils.myMemberInfo.student_id
-    this.getMemberInfo()
   },  
   data() {
     return {
       memberInfo: null,      
       switche: true,
-      loading: false
+      loading: false,
+      profileDialog: {
+        show:false
+      }
     };
   },
 };
 </script>
+<style lang="scss" scoped>
+.v-face-cursor {
+  cursor: pointer;
+
+}
+</style>

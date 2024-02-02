@@ -56,7 +56,7 @@
         <!-- your content here -->
         <v-container class="mt-n16 pb-0">
           <router-view></router-view>
-          <content-footer auth v-if="!$route.meta.hideFooter"></content-footer>
+          <!-- <content-footer auth v-if="!$route.meta.hideFooter"></content-footer> -->
         </v-container>
       </fade-transition>
     </v-main>

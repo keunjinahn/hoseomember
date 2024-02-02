@@ -39,7 +39,7 @@
         <!-- your content here -->
         <router-view></router-view>
       </fade-transition>
-      <content-footer v-if="!$route.meta.hideFooter"></content-footer>
+      <!-- <content-footer v-if="!$route.meta.hideFooter"></content-footer>
       <v-btn
         :ripple="false"
         icon
@@ -67,7 +67,7 @@
         @updateSidebarTheme="updateSidebarTheme"
         @toggleNavbarPosition="toggleNavbarPosition"
       >
-      </settings-drawer>
+      </settings-drawer> -->
     </v-main>
   </v-app>
 </template>
