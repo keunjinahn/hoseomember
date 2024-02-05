@@ -297,7 +297,7 @@
               </div>
             </v-col>
             <v-col>
-              <div class="pos-right">
+              <div class="pos-right" v-if="!$utils.isMyProfile(memberInfo.student_id)">
                 <v-btn
                   :ripple="false"
                   color="transparent"
@@ -423,7 +423,7 @@
               </div>              
             </v-card>
           </v-col>
-          <v-col :cols="page_type" v-show="$utils.isMyProfile()">
+          <v-col :cols="page_type" v-show="$utils.isMyProfile(memberInfo.student_id)">
             <v-card class="card-shadow border-radius-xl h-100">
               <div class="px-4 pt-4">
                 <h6 class="mb-0 text-h6 text-typo font-weight-bold">
@@ -640,7 +640,7 @@
                   py-3
                   px-6
                 "
-                >Cancel</v-btn
+                >닫기</v-btn
               >
 
               <v-btn
@@ -724,7 +724,7 @@
                   py-3
                   px-6
                 "
-                >Cancel</v-btn
+                >닫기</v-btn
               >
 
               
@@ -783,8 +783,6 @@ export default {
           this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)
         }
         this.memberInfo.id = memberInfo.id
-        if(this.$utils.myMemberInfo.student_id == memberInfo.student_id)
-          this.$utils.myMemberInfo.name = this.memberInfo.basic_info_json.name
 
       } catch (ex) {
         console.error('member Update Error:')
@@ -844,7 +842,7 @@ export default {
       }      
 
     },
-    async geMessageList() {
+    async getMessageList() {
       try {
         this.table.loading = true
         // let filters_or = []
@@ -897,13 +895,14 @@ export default {
   mounted() {
       
     this.show = false
+
+    this.memberInfo = Object.assign({},this.$utils.memberInfo)
     this.memberInfo.student_id = this.student_id
-    this.page_type = (this.$utils.isMyProfile() == true) ? 4 : 6;
+    this.page_type = (this.$utils.isMyProfile(this.memberInfo.student_id) == true) ? 4 : 6;
     this.getMemberInfo()
-    if(this.$utils.isMyProfile())
-      this.geMessageList()
-    
-    
+    if(this.$utils.isMyProfile(this.memberInfo.student_id))
+      this.getMessageList()
+
   },    
   computed: {
     pages() {

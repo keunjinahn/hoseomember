@@ -12,7 +12,7 @@
         </v-tabs>
       </v-col>
     </v-row>
-    <v-row>
+    <v-row v-if="memberInfo">
       <v-col lg="3">
         <v-card class="card-shadow border-radius-xl position-sticky top-1">
           <div class="px-4 py-3">
@@ -487,7 +487,9 @@
                 <img v-else
                   src="@/assets/img/hoseomember/vface.jpg"
                   alt="Avatar"
-                  class="border-radius-lg"
+                  class="border-radius-lg v-face-cursor"
+                  @click="profileDialog.show=true"
+                  
                 />                   
               </v-avatar>
             </v-col>
@@ -536,7 +538,7 @@
               py-3
               px-6
             "
-            >Cancel</v-btn
+            >닫기</v-btn
           >
 
           <v-btn
@@ -587,18 +589,29 @@ export default {
 
     async getMemberInfo() {
       try {
+        
         let filters = [];
-        filters.push({ name: "student_id", op: "eq", val: this.memberInfo.student_id });
+        if (this.$utils.myMemberInfo.student_id == ''){
+          return
+        }
+
+        filters.push({ name: "student_id", op: "eq", val: this.$utils.myMemberInfo.student_id });
         let q = JSON.stringify({ filters });
         let params = { q };
+        
         let { data } = await this.$http.get("member", { params });     
-        let memberInfo = data.objects.find(v => v.student_id == this.memberInfo.student_id)
+
+        let memberInfo = data.objects.find(v => v.student_id == this.$utils.myMemberInfo.student_id)
+       
         if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
           this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)  
-        }        
+        }
+        
+        
         if (memberInfo.introduction_info_json != undefined && memberInfo.introduction_info_json.length > 5) {
           this.memberInfo.introduction_info_json = JSON.parse(memberInfo.introduction_info_json)  
         }
+          
         if (memberInfo.career_info_json != undefined && memberInfo.career_info_json.length > 5) {
           this.memberInfo.career_info_json = JSON.parse(memberInfo.career_info_json)  
         }        
@@ -613,9 +626,9 @@ export default {
         } 
         if (memberInfo.advertisement_info_json != undefined && memberInfo.advertisement_info_json.length > 5) {
           this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)  
-        }                 
+        }    
+        this.memberInfo.student_id = memberInfo.student_id
         this.memberInfo.id = memberInfo.id
-        this.$utils.myMemberInfo.name = this.memberInfo.basic_info_json.name
         
       } catch (ex) {
         console.error('member Update Error:')
@@ -635,7 +648,18 @@ export default {
     async updateMemberInfo () {
       // validate
       let results = []
+      if(this.$utils.myMemberInfo.student_id == ''){
+        this.$utils.$emit("modal-alert", "정보 매칭 오류로 조회 실패하였습니다.");
+        return
+      }
+        
+
+      if(this.$utils.myMemberInfo.student_id != this.memberInfo.student_id){
+        alert("저장정보가 일치하지 않습니다.(" + this.$utils.myMemberInfo.student_id + "/" + this.memberInfo.student_id + ")")
+        return
+      }
       let aid = this.memberInfo.id
+
       var data = {
           'student_id': this.memberInfo.student_id,
           'basic_info_json': JSON.stringify(this.memberInfo.basic_info_json),
@@ -692,9 +716,9 @@ export default {
     }
   },
   mounted() {
+    // 
+    this.memberInfo = Object.assign({},this.$utils.memberInfo)
     this.getMemberInfo()
-    this.memberInfo = Object.assign(this.$utils.memberInfo)
-    this.memberInfo.student_id = this.$utils.myMemberInfo.student_id
   },  
   data() {
     return {

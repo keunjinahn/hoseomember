@@ -9,6 +9,96 @@
           검색 대상 원우 이름이나 학번 또는 회사명을 입력하여 검색하세요
         </p>
       </div>
+      <v-row style="margin-top:10px">
+        <!-- <v-col cols="2">
+            <v-select outlined dense hide-details
+                        v-model="selected_year_type"
+                        :items="$utils.array_year_type"
+                        label="검색연도"
+                        background-color="white"
+                        item-text="name"
+                        item-value="code"
+                        @change="onChangeYearType(selected_year_type)"
+            />
+        </v-col>
+        <v-col cols="2">
+            <v-select outlined dense hide-details
+                v-model="selected_lastcompleted_type"
+                :items="$utils.array_lastcompleted_type"
+                label="완료여부"
+                background-color="white"
+                item-text="name"
+                item-value="code"
+                @change="onChangeaLastCompleteType(selected_lastcompleted_type)"
+            />
+        </v-col> -->
+        <v-col cols="2">
+          <v-select outlined dense hide-details
+            v-model="selected_grade_type"
+            :items="$utils.array_grade_type"
+            label="기수선택"
+            background-color="white"
+            item-text="name"
+            item-value="code"
+            class="boder-1"
+            @change="onChangeaGradeType"
+          />
+        </v-col>        
+        <v-col cols="2">
+          <v-select outlined dense hide-details
+            v-model="selected_degree_type"
+            :items="$utils.array_degree_type"
+            label="학위선택"
+            background-color="white"
+            item-text="name"
+            item-value="code"
+            class="boder-1"
+            @change="onChangeaDegreeType"
+          />
+        </v-col>              
+        <v-col cols="6">
+            <v-text-field
+                outlined
+                dense
+                hide-details
+                autofocus
+                v-model="filter.querystring"
+                background-color="white"
+                class="boder-1"
+                placeholder="검색어를 입력하세요"
+                prepend-inner-icon="mdi-magnify"
+                @keydown.enter="getMemberList()" />
+        </v-col>
+        <v-col cols="2">
+          <v-btn
+            color="#cb0c9f"
+            class="
+              font-weight-bolder
+              btn-default
+              bg-gradient-default
+              py-5
+              px-12
+              ms-auto
+              mt-sm-auto mt-4
+            "
+            small
+            @click="getMemberList()"
+          >
+          검색
+          </v-btn>          
+        </v-col>
+
+        <!-- <v-col cols="1.5">
+            <v-btn
+                depressed
+                tile
+                v-show="isAdminPermission()"
+                class="flex-grow-1 ml-1"
+                color="primary"
+                @click="dialog.status_show=true;status_loading=false"
+            >진행상황</v-btn>
+        </v-col> -->
+      </v-row>
 
       <v-card-text class="px-0 py-0">
         <v-data-table
@@ -21,7 +111,7 @@
           :items-per-page="itemsPerPage"
           mobile-breakpoint="0"
         >
-          <template v-slot:top>
+          <!-- <template v-slot:top>
             <v-toolbar flat height="80">
               <v-row>
                 <v-col cols="12" md="12">
@@ -55,7 +145,7 @@
 
               
             </v-toolbar>
-          </template>
+          </template> -->
 
           <template v-slot:item.name="{ item }">
             <div class="d-flex align-center">
@@ -88,6 +178,11 @@
               {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y')? item.phone_number :'****'}}
             </span>
           </template>
+          <template v-slot:item.degree_type="{ item }">
+            <span class="text-sm font-weight-normal text-body">
+              {{ (item.degree_type == 1)? '석사':'박사'}}
+            </span>
+          </template>          
           <template v-slot:item.actions="{ item }">
             <v-btn
               outlined
@@ -142,9 +237,9 @@
     </v-card>
 
     <v-dialog v-model="profileDialog.show" max-width="1600px">
-      <v-btn fab x-small dark depressed color="grey darken-1" class="school-detail-close" @click="profileDialog.show=false">
+      <v-btn fab x-big dark depressed color="grey darken-1" class="school-detail-close" @click="profileDialog.show=false">
         <!-- <v-icon size="12">fas fa-times</v-icon>X -->
-         <v-icon size="12">fas fa-times</v-icon>
+         <v-icon size="20">fas fa-times</v-icon>
       </v-btn>      
       <v-card class="card-shadow border-radius-xl">
         
@@ -210,12 +305,16 @@ export default {
       itemsPerPage: 10,
       dialog: false,
       dialogDelete: false,
-      search: "",
       editedIndex: -1,
       profileDialog: {
         show: false,
         student_id:null
       },
+      filter:{
+        querystring:''
+      },
+      selected_grade_type:null,
+      selected_degree_type:null,
       editedItem: {
         name: "",
         email: "",
@@ -261,6 +360,11 @@ export default {
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
+            text: "학위",
+            value: "degree_type",
+            class: "text-secondary font-weight-bolder opacity-7",
+          },         
+          {
             text: "전화번호",
             value: "phone_number",
             class: "text-secondary font-weight-bolder opacity-7",
@@ -282,6 +386,8 @@ export default {
      };
   },
   mounted () {
+    this.selected_grade_type = this.$utils.array_grade_type[0]
+    this.selected_degree_type = this.$utils.array_degree_type[0]
     this.getMemberList()
   },
   methods: {
@@ -293,7 +399,9 @@ export default {
         let params = {
           offset: ((this.page-1) * this.itemsPerPage),
           limit: this.itemsPerPage,
-          querystring:''
+          querystring:this.filter.querystring,
+          grade_type:this.selected_grade_type.code,
+          degree_type:this.selected_degree_type.code
         };
         let { data } = await this.$http.post("member_list", params);     
         this.table.total = data.num_results
@@ -349,6 +457,14 @@ export default {
       }
       this.close();
     },
+    onChangeaGradeType(grade_type){
+      this.selected_grade_type = this.$utils.array_grade_type.find(v=>v.code == grade_type)
+      this.getMemberList()
+    },
+    onChangeaDegreeType(degree_type){
+      this.selected_degree_type = this.$utils.array_degree_type.find(v=>v.code == degree_type)
+      this.getMemberList()
+    }   
   },
   watch: {
     dialog(val) {
@@ -379,7 +495,7 @@ export default {
 <style lang="scss" scoped>
 .school-detail-close {
   position: absolute;
-  top: 60px; right: 130px;
+  top: 60px; left: 250px;
   z-index: 10;
 }
 .school-detail-container {
@@ -387,5 +503,9 @@ export default {
 }
 .text-left-margin-5 {
   margin-left:5px;
+}
+.boder-1{
+  border: 1px solid gray;
+  margin:0px 20px;
 }
 </style>

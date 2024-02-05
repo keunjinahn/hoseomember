@@ -26,8 +26,8 @@ const uitls = new Vue({
             // window.scrollTo(x좌표, y좌표)
             window.scrollTo(0, 0);
         },
-        isMyProfile() {
-            if (this.myMemberInfo.student_id == this.memberInfo.student_id)
+        isMyProfile(student_id) {
+            if (this.myMemberInfo.student_id == student_id)
                 return true
             return false
         },
@@ -90,6 +90,23 @@ const uitls = new Vue({
                     site_url: ''
                 }
             },
+            array_grade_type: [
+                { name: '전체', code: 0 },
+                { name: '9기', code: 9 },
+                { name: '8기', code: 8 },
+                { name: '7기', code: 7 },
+                { name: '6기', code: 6 },
+                { name: '5기', code: 5 },
+                { name: '4기', code: 4 },
+                { name: '3기', code: 3 },
+                { name: '2기', code: 2 },
+                { name: '1기', code: 1 },
+              ],       
+            array_degree_type: [
+                { name: '전체', code: 0 },
+                { name: '석사', code: 1 },
+                { name: '박사', code: 2 },
+              ],           
         }
     }
 })

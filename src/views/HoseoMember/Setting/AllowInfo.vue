@@ -46,7 +46,7 @@
                 </v-list-item>
               </v-list-item-group>
             </v-list>        
-          <h6 class="text-typo mb-4 text-sm">
+          <!-- <h6 class="text-typo mb-4 text-sm">
             개인정보 수집·이용 동의서
           </h6>        
           <div
@@ -85,7 +85,7 @@
             <div class="ms-4 text-body text-sm">
               동의여부
             </div>
-          </v-list-item-content>          
+          </v-list-item-content>           -->
         </v-col>       
         <v-btn
           color="#cb0c9f"
