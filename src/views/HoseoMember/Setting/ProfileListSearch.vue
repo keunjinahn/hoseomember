@@ -10,28 +10,6 @@
         </p>
       </div>
       <v-row style="margin-top:10px">
-        <!-- <v-col cols="2">
-            <v-select outlined dense hide-details
-                        v-model="selected_year_type"
-                        :items="$utils.array_year_type"
-                        label="검색연도"
-                        background-color="white"
-                        item-text="name"
-                        item-value="code"
-                        @change="onChangeYearType(selected_year_type)"
-            />
-        </v-col>
-        <v-col cols="2">
-            <v-select outlined dense hide-details
-                v-model="selected_lastcompleted_type"
-                :items="$utils.array_lastcompleted_type"
-                label="완료여부"
-                background-color="white"
-                item-text="name"
-                item-value="code"
-                @change="onChangeaLastCompleteType(selected_lastcompleted_type)"
-            />
-        </v-col> -->
         <v-col cols="2">
           <v-select outlined dense hide-details
             v-model="selected_grade_type"
@@ -55,8 +33,20 @@
             class="boder-1"
             @change="onChangeaDegreeType"
           />
-        </v-col>              
-        <v-col cols="6">
+        </v-col>      
+        <v-col cols="2">
+          <v-select outlined dense hide-details
+            v-model="selected_regist_type"
+            :items="$utils.array_regist_type"
+            label="작성상태"
+            background-color="white"
+            item-text="name"
+            item-value="code"
+            class="boder-1"
+            @change="onChangeaRegistType"
+          />
+        </v-col>                
+        <v-col cols="4">
             <v-text-field
                 outlined
                 dense
@@ -169,13 +159,13 @@
 
           <template v-slot:item.email="{ item }">
             <span class="text-sm font-weight-normal text-body">
-              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y')? item.email :'****'}}
+              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y' || selected_regist_type.code == 1)? item.email :'****'}}
             </span>
           </template>
 
           <template v-slot:item.phone_number="{ item }">
             <span class="text-sm font-weight-normal text-body">
-              {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y')? item.phone_number :'****'}}
+              {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y' || selected_regist_type.code == 1 )? item.phone_number :'****'}}
             </span>
           </template>
           <template v-slot:item.degree_type="{ item }">
@@ -189,6 +179,7 @@
               color="#fff"
               class="font-weight-bolder bg-gradient-primary py-4 px-7"
               small
+              :disabled="selected_regist_type.code == 1"
               @click="showProfileDialog(item)"
             >
               <v-icon size="12">fa-solid fa-address-card pe-2</v-icon> 프로필보기
@@ -220,7 +211,9 @@
               "
             >
             </v-text-field>
+            전체개수 : {{table.total}}
           </v-col>
+          
           <v-col cols="6" class="ml-auto d-flex justify-end">
             <v-pagination
               prev-icon="fa fa-angle-left"
@@ -236,7 +229,7 @@
       </v-card-actions>
     </v-card>
 
-    <v-dialog v-model="profileDialog.show" max-width="1600px">
+    <v-dialog v-model="profileDialog.show" max-width="1800px">
       <v-btn fab x-big dark depressed color="grey darken-1" class="school-detail-close" @click="profileDialog.show=false">
         <!-- <v-icon size="12">fas fa-times</v-icon>X -->
          <v-icon size="20">fas fa-times</v-icon>
@@ -315,6 +308,7 @@ export default {
       },
       selected_grade_type:null,
       selected_degree_type:null,
+      selected_regist_type:null,
       editedItem: {
         name: "",
         email: "",
@@ -345,33 +339,38 @@ export default {
             text: "원우이름",
             align: "start",
             cellClass: "border-bottom",
-            sortable: false,
+            sortable: true,
             value: "name",
             class: "text-secondary font-weight-bolder opacity-7 border-bottom",
           },
           {
             text: "소속회사",
             value: "company",
+            sortable: false,
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
             text: "기수",
             value: "grade",
+            sortable: true,
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
             text: "학위",
+            sortable: true,
             value: "degree_type",
             class: "text-secondary font-weight-bolder opacity-7",
           },         
           {
             text: "전화번호",
             value: "phone_number",
+            sortable: false,
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
             text: "이메일",
             value: "email",
+            sortable: false,
             class: "text-secondary font-weight-bolder opacity-7",
           },        
           {
@@ -388,6 +387,7 @@ export default {
   mounted () {
     this.selected_grade_type = this.$utils.array_grade_type[0]
     this.selected_degree_type = this.$utils.array_degree_type[0]
+    this.selected_regist_type = this.$utils.array_regist_type[0]
     this.getMemberList()
   },
   methods: {
@@ -401,7 +401,8 @@ export default {
           limit: this.itemsPerPage,
           querystring:this.filter.querystring,
           grade_type:this.selected_grade_type.code,
-          degree_type:this.selected_degree_type.code
+          degree_type:this.selected_degree_type.code,
+          regist_type:this.selected_regist_type.code
         };
         let { data } = await this.$http.post("member_list", params);     
         this.table.total = data.num_results
@@ -409,7 +410,7 @@ export default {
             v._index = i + (this.page - 1) * this.itemsPerPage + 1;
             return v;
         });
-        this.pageCount = (data.num_results / this.itemsPerPage) + 1
+        this.pageCount =  Math.trunc(data.num_results / this.itemsPerPage) + 1
         this.table.loading = false
       } catch (ex) {
         console.error('member Update Error:')
@@ -464,6 +465,10 @@ export default {
     onChangeaDegreeType(degree_type){
       this.selected_degree_type = this.$utils.array_degree_type.find(v=>v.code == degree_type)
       this.getMemberList()
+    },
+    onChangeaRegistType(regist_type){
+      this.selected_regist_type = this.$utils.array_regist_type.find(v=>v.code == regist_type)
+      this.getMemberList()
     }   
   },
   watch: {
@@ -486,7 +491,7 @@ export default {
     },
     pages() {
       return this.pagination.rowsPerPage
-        ? Math.ceil(this.table.total / this.pagination.rowsPerPage)
+        ? Math.trunc(Math.ceil(this.table.total / this.pagination.rowsPerPage))
         : 0;
     },
   },
@@ -495,7 +500,7 @@ export default {
 <style lang="scss" scoped>
 .school-detail-close {
   position: absolute;
-  top: 60px; left: 250px;
+  top: 70px; left: 7%;
   z-index: 10;
 }
 .school-detail-container {

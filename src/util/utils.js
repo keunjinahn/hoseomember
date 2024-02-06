@@ -106,7 +106,13 @@ const uitls = new Vue({
                 { name: '전체', code: 0 },
                 { name: '석사', code: 1 },
                 { name: '박사', code: 2 },
-              ],           
+              ],     
+            array_regist_type: [
+                { name: '전체', code: 0 },
+                { name: '미작성', code: 1 },
+                { name: '작성', code: 2 },
+              ],                  
+                  
         }
     }
 })
