@@ -21,11 +21,12 @@
         </div>        
       </div>
     </div>
-    <div :id="editorId" :name="name" class="" ref="editor"></div>
+    <div :id="editorId" :name="name" class="edit-h" ref="editor"></div>
   </div>
 </template>
 <script>
 import "quill/dist/quill.snow.css";
+// :class="{'auto-scale':auto_scale == true}" 
 export default {
   name: "html-editor",
   props: {
@@ -41,6 +42,10 @@ export default {
       type: Boolean,
       default:false,
     },      
+    auto_scale:{
+      type:Boolean,
+      default:false,
+    },
     name: String,
   },
   data() {
@@ -73,7 +78,8 @@ export default {
         this.content = html;
         this.$emit("input", this.content);
       });
-      // this.editor.enable(!this.toolbar_show);
+      console.log("toolbar_show :",this.toolbar_show)
+      this.editor.enable(this.toolbar_show);    
     },
     pasteHTML() {
       if (!this.editor) {
@@ -110,5 +116,11 @@ export default {
 <style lang="scss" scoped>
 .toolbar-hide {
   border-bottom: 0px !important;
+}
+.edit-h {
+  min-height: 200px;
+}
+.auto-scale {
+  
 }
 </style>

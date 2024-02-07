@@ -5,21 +5,36 @@
     </div>
     <div class="px-6 pb-6 pt-0">
         <v-row class="mt-2">
-        <v-col cols="12">
-      
-          <div
-            class="d-flex flex-column bg-gray-100 pa-6 border-radius-lg"
-          >
-            <span class="mb-2 text-body text-xs">
-              <span class="text-dark  ms-2">개인 소유의 홈페이지 혹은 광고하고자 하는 URL이 있다면 첨부해주세요.</span>
-            </span>            
-            <span class="mb-2 text-body text-xs">
-              <span class="text-dark  ms-2">URL은 전용 홈페이지 또는 관련 정보를 찾는 사람에게 노출됩니다.</span>
-            </span>            
-          </div>          
-      
-          <html-editor :toolbar_show="true" @input="updateSiteUrl" :value="memberInfo.advertisement_info_json.site_url"></html-editor>
-        </v-col>                       
+          <v-col cols="12">
+        
+            <div
+              class="d-flex flex-column bg-gray-100 pa-6 border-radius-lg"
+            >
+              <span class="mb-2 text-body text-xs">
+                <span class="text-dark  ms-2">개인 소유의 홈페이지 혹은 광고하고자 하는 사진이나 정보가 있다면 첨부해주세요.</span>
+              </span>            
+              <span class="mb-2 text-body text-xs">
+                <span class="text-dark  ms-2">사진이나 정보는 관련 정보를 찾는 사람에게 노출됩니다.</span>
+              </span>            
+            </div>          
+            <v-row class="mt-2">
+              <v-col cols="6" >
+                <html-editor :toolbar_show="true" @input="updateProduct_1" :value="memberInfo.advertisement_info_json.product_1"></html-editor>
+              </v-col>
+              <v-col cols="6">
+                <html-editor :toolbar_show="true" @input="updateProduct_2" :value="memberInfo.advertisement_info_json.product_2"></html-editor>
+              </v-col>
+            </v-row>
+            <v-row class="mt-2">
+              <v-col cols="6">
+                <html-editor :toolbar_show="true" @input="updateProduct_3" :value="memberInfo.advertisement_info_json.product_3"></html-editor>
+              </v-col>
+              <v-col cols="6">
+                <html-editor :toolbar_show="true" @input="updateProduct_4" :value="memberInfo.advertisement_info_json.product_4"></html-editor>
+              </v-col>
+            </v-row>
+            
+          </v-col>                       
         <v-btn
           color="#cb0c9f"
           class="
@@ -59,8 +74,19 @@ export default {
     },
     updateSiteUrl(contents) {
       this.memberInfo.advertisement_info_json.site_url = contents
-    }       
-
+    },       
+    updateProduct_1(contents) {
+      this.memberInfo.advertisement_info_json.product_1 = contents
+    },
+    updateProduct_2(contents) {
+      this.memberInfo.advertisement_info_json.product_2 = contents
+    }, 
+    updateProduct_3(contents) {
+      this.memberInfo.advertisement_info_json.product_3 = contents
+    }, 
+    updateProduct_4(contents) {
+      this.memberInfo.advertisement_info_json.product_4 = contents
+    },                  
   },
   mounted() {
   },

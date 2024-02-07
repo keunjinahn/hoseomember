@@ -87,7 +87,11 @@ const uitls = new Vue({
                     allow_my_info: '',
                 },
                 advertisement_info_json: {
-                    site_url: ''
+                    site_url: '',
+                    product_1:'',
+                    product_2:'',
+                    product_3:'',
+                    product_4:'',
                 }
             },
             array_grade_type: [

@@ -35,7 +35,6 @@
           position-relative
           mt-6
           title-height
-          
         "
         :style="`background-image: url(${require('../../../assets/img/\hoseomember/title.png')}); background-position: 100%; background-size: cover;`"
         >   
@@ -194,7 +193,7 @@
             :style="`background-image: url(${require('../../../assets/img/\hoseomember/title.png')}); background-position: 100%; background-size: cover;`"
             >   
               <h5 class="mb-1 text-h2 font-weight-bold  main-title">
-                2. GIVE & TAKE
+                3. GIVE & TAKE
               </h5>   
           </div>
           <div  class="sub-block" >    
@@ -230,6 +229,42 @@
             </v-row>
           </div>      
         </div>
+        <div>
+          <div
+            class="
+              overflow-hidden
+              position-relative
+              mt-6
+              title-height
+              
+            "
+            :style="`background-image: url(${require('../../../assets/img/\hoseomember/title.png')}); background-position: 100%; background-size: cover;`"
+            >   
+              <h5 class="mb-1 text-h2 font-weight-bold  main-title">
+                3. 광고 및 소개
+              </h5>   
+          </div>
+          <div  class="sub-block" >    
+          </div>  
+          <div  class="body-1-block overflow-hidden" >    
+            <v-row>
+              <v-col cols="6">
+                <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_1"></html-editor>           
+              </v-col >     
+              <v-col cols="6">
+                <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_2"></html-editor>           
+              </v-col >                  
+            </v-row>
+            <v-row>
+              <v-col cols="6">
+                <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_3"></html-editor>           
+              </v-col >     
+              <v-col cols="6">
+                <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_4"></html-editor>           
+              </v-col >                  
+            </v-row>           
+          </div>      
+        </div>      
       </div>
       <div v-else>
         <div 
@@ -535,7 +570,7 @@
         </v-row>
         <v-row>
           <v-col cols="6">
-            <v-card class="card-shadow border-radius-xl min-height-300">
+            <v-card class="card-shadow border-radius-xl min-height-550">
               <div class="px-4 pt-4">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">ABL 주제</h6>
               </div>
@@ -549,9 +584,31 @@
               <div class="px-4 pt-4">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">광고 및 소개</h6>
               </div>
-              <div class="px-1 py-1">
-                <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.site_url"></html-editor>
-              </div>
+              <v-row>
+                <v-col cols="6">
+                  <div class="px-1 py-1" >
+                    <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_1" :auto_scale="true"></html-editor>
+                  </div>
+                </v-col>
+                <v-col cols="6">
+                  <div class="px-1 py-1" >
+                    <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_2" :auto_scale="true"></html-editor>
+                  </div>
+                </v-col>
+              </v-row>
+              <v-row>
+                <v-col cols="6">
+                  <div class="px-1 py-1" >
+                    <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_3" :auto_scale="true"></html-editor>
+                  </div>
+                </v-col>
+                <v-col cols="6">
+                  <div class="px-1 py-1" >
+                    <html-editor  :toolbar_show="false" :value="memberInfo.advertisement_info_json.product_4" :auto_scale="true"></html-editor>
+                  </div>
+                </v-col>
+              </v-row>             
+
             </v-card>
           </v-col>      
         </v-row>
@@ -794,7 +851,11 @@ export default {
 
     },
     switchChange() {
-      
+      if (!document.fullscreenElement) {
+          document.documentElement.requestFullscreen();
+      } else {
+          document.exitFullscreen();
+      }
       setTimeout(() => {
         this.$refs.idInput.focus()
       }, 1000);
@@ -913,6 +974,7 @@ export default {
   },  
   data: function () {
     return {
+      fullscreen:true,
       page_type:6,
       page: 1,
       pageCount: 0,
@@ -1174,7 +1236,19 @@ tr {
       border:1px solid blue;
   }  
 }
-
+.min-height-550{
+  min-height: 550px;
+}
+.home {
+  width: 100vw;
+  height: 100vh;
+  left: 0;
+  z-index: -1;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
 #wrap {
     	width: 100%;
         height: 100vh;
