@@ -146,7 +146,8 @@
                               &nbsp;{{memberInfo.introduction_info_json.figure}}
                             </div>
                           </v-list-item-content>
-                        </v-list-item>                                          
+                        </v-list-item>        
+
                       </v-list-item-group>
                     </v-list>
                   </div>
@@ -327,7 +328,8 @@
                  <span>
                   &nbsp; <v-icon size="16" class="me-1">fa-regular fa-envelope</v-icon>       
                   {{(memberInfo.allow_info_json.allow_email == 'Y')? memberInfo.basic_info_json.email:'***'}}
-                 </span>                 
+                 </span>   
+
                 </p>
               </div>
             </v-col>
@@ -417,7 +419,40 @@
                           &nbsp;{{this.memberInfo.introduction_info_json.figure}}
                         </div>
                       </v-list-item-content>
-                    </v-list-item>                                          
+                    </v-list-item>     
+                    <v-list-item :ripple="false" class="px-0 border-radius-sm">
+                      <v-list-item-content class="py-0">
+                        <div class="ms-4 text-body text-sm">
+                          <strong class="text-dark">소개용 슬라이드 파일:</strong>
+                          <v-row>
+                            <v-col cols="8">{{memberInfo.introduction_info_json.slide_file.replace(memberInfo.student_id + "_",'')}}</v-col>
+                            <v-col cols="4">
+                              <div v-show="memberInfo.introduction_info_json.slide_file.length != 0">
+                                  <v-btn
+                                  :ripple="false"
+                                  :elevation="0"
+                                  class="
+                                  font-weight-bold
+                                  text-xs text-dark
+                                  btn-light
+                                  bg-gradient-light
+                                  py-2
+                                  px-2
+                                  "
+                                  color="white"
+                                  small
+                                  @click="slide_file_download"
+                                  
+                                >
+                                  다운로드
+                                </v-btn>
+                              </div>
+                            </v-col>
+                          </v-row>
+                        </div>
+
+                      </v-list-item-content>
+                    </v-list-item>                                                             
                   </v-list-item-group>
                 </v-list>
               </div>
@@ -801,6 +836,7 @@
 <script>
 import HtmlEditor from "../Components/HtmlEditor.vue";
 import moment from "moment";
+import axios from 'axios'
 export default {
   name: "Profile-Overview",
   props: ['student_id'],  
@@ -815,7 +851,6 @@ export default {
         let q = JSON.stringify({ filters });
         let params = { q };
         let { data } = await this.$http.get("member", { params });
-        
         let memberInfo = data.objects.find(v => v.student_id == this.memberInfo.student_id)
         if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
           this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)
@@ -851,11 +886,6 @@ export default {
 
     },
     switchChange() {
-      if (!document.fullscreenElement) {
-          document.documentElement.requestFullscreen();
-      } else {
-          document.exitFullscreen();
-      }
       setTimeout(() => {
         this.$refs.idInput.focus()
       }, 1000);
@@ -951,7 +981,27 @@ export default {
       this.messageInfo.show = true
       this.messageInfo.sendName = item.send_name
       this.messageInfo.message = item.message
-    }
+    },
+    async slide_file_download() {
+      var url = this.$utils.getWebURL() + '/api/v1/introduction_upload_file/' + this.memberInfo.introduction_info_json.slide_file_src
+      axios({
+        method: 'get',
+        url:url,
+        responseType: 'blob'
+      })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data], {
+          type: 'application/vnd.ms-excel'
+        }))
+        const link = document.createElement('a')
+        link.href = url
+        var download_file_name = this.memberInfo.introduction_info_json.slide_file
+        link.setAttribute('download', download_file_name) // or any other extension
+        document.body.appendChild(link)
+        link.click()
+      })
+      .catch(() => console.log('error occured'))
+    },    
   },
   mounted() {
       
@@ -963,7 +1013,20 @@ export default {
     this.getMemberInfo()
     if(this.$utils.isMyProfile(this.memberInfo.student_id))
       this.getMessageList()
-
+    
+    // window.addEventListener('mousedown', (e)=>{
+    //   if (event.button === 0) {
+    //     if(this.layoutType == true){
+    //     }
+        
+    //   }else{
+    //     if(this.layoutType == true){
+    //       this.$refs.idInput.focus()
+    //     }
+    //   }
+    //   return e
+    // });  
+  
   },    
   computed: {
     pages() {

@@ -572,6 +572,7 @@ import AblTitleInfo from "./AblTitleInfo.vue";
 import AllowInfo from "./AllowInfo.vue";
 import AdvertisementInfo from "./AdvertisementInfo.vue";
 import HtmlEditor from "../Components/HtmlEditor.vue";
+import moment from "moment";
 export default {
   
   name: "Settings",
@@ -600,35 +601,43 @@ export default {
         let params = { q };
         
         let { data } = await this.$http.get("member", { params });     
-
-        let memberInfo = data.objects.find(v => v.student_id == this.$utils.myMemberInfo.student_id)
+        if(data.num_results == 0){
+          this.memberInfo.student_id = this.$utils.user.user_id
+          this.memberInfo.basic_info_json.name = (this.$utils.user.user_name != null)? this.$utils.user.user_name:''
+          this.memberInfo.basic_info_json.phone_number = (this.$utils.user.phone != null)? this.$utils.user.phone:''
+          this.memberInfo.basic_info_json.company = (this.$utils.user.department != null)? this.$utils.user.department:''
+          this.memberInfo.basic_info_json.email = (this.$utils.user.email != null)? this.$utils.user.email:''
+        }else{
+          let memberInfo = data.objects.find(v => v.student_id == this.$utils.myMemberInfo.student_id)
        
-        if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
-          this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)  
-        }
-        
-        
-        if (memberInfo.introduction_info_json != undefined && memberInfo.introduction_info_json.length > 5) {
-          this.memberInfo.introduction_info_json = JSON.parse(memberInfo.introduction_info_json)  
-        }
+          if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
+            this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)  
+          }
           
-        if (memberInfo.career_info_json != undefined && memberInfo.career_info_json.length > 5) {
-          this.memberInfo.career_info_json = JSON.parse(memberInfo.career_info_json)  
-        }        
-        if (memberInfo.provide_info_json != undefined && memberInfo.provide_info_json.length > 5) {
-          this.memberInfo.provide_info_json = JSON.parse(memberInfo.provide_info_json)  
-        }        
-        if (memberInfo.abl_title_info_json != undefined && memberInfo.abl_title_info_json.length > 5) {
-          this.memberInfo.abl_title_info_json = JSON.parse(memberInfo.abl_title_info_json)  
-        }                        
-        if (memberInfo.allow_info_json != undefined && memberInfo.allow_info_json.length > 5) {
-          this.memberInfo.allow_info_json = JSON.parse(memberInfo.allow_info_json)  
-        } 
-        if (memberInfo.advertisement_info_json != undefined && memberInfo.advertisement_info_json.length > 5) {
-          this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)  
-        }    
-        this.memberInfo.student_id = memberInfo.student_id
-        this.memberInfo.id = memberInfo.id
+          
+          if (memberInfo.introduction_info_json != undefined && memberInfo.introduction_info_json.length > 5) {
+            this.memberInfo.introduction_info_json = JSON.parse(memberInfo.introduction_info_json)  
+          }
+            
+          if (memberInfo.career_info_json != undefined && memberInfo.career_info_json.length > 5) {
+            this.memberInfo.career_info_json = JSON.parse(memberInfo.career_info_json)  
+          }        
+          if (memberInfo.provide_info_json != undefined && memberInfo.provide_info_json.length > 5) {
+            this.memberInfo.provide_info_json = JSON.parse(memberInfo.provide_info_json)  
+          }        
+          if (memberInfo.abl_title_info_json != undefined && memberInfo.abl_title_info_json.length > 5) {
+            this.memberInfo.abl_title_info_json = JSON.parse(memberInfo.abl_title_info_json)  
+          }                        
+          if (memberInfo.allow_info_json != undefined && memberInfo.allow_info_json.length > 5) {
+            this.memberInfo.allow_info_json = JSON.parse(memberInfo.allow_info_json)  
+          } 
+          if (memberInfo.advertisement_info_json != undefined && memberInfo.advertisement_info_json.length > 5) {
+            this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)  
+          }    
+          this.memberInfo.student_id = memberInfo.student_id
+          this.memberInfo.id = memberInfo.id
+        }
+        
         
       } catch (ex) {
         console.error('member Update Error:')
@@ -645,7 +654,7 @@ export default {
         this.$refs.idInput.focus()
       }, 1000);
     },    
-    async updateMemberInfo () {
+    async updateMemberInfo (params={}) {
       // validate
       let results = []
       if(this.$utils.myMemberInfo.student_id == ''){
@@ -654,25 +663,32 @@ export default {
       }
         
 
-      if(this.$utils.myMemberInfo.student_id != this.memberInfo.student_id){
-        alert("저장정보가 일치하지 않습니다.(" + this.$utils.myMemberInfo.student_id + "/" + this.memberInfo.student_id + ")")
-        return
-      }
+      // if(this.$utils.myMemberInfo.student_id != this.memberInfo.student_id){
+      //   alert("저장정보가 일치하지 않습니다.(" + this.$utils.myMemberInfo.student_id + "/" + this.memberInfo.student_id + ")")
+      //   return
+      // }
       let aid = this.memberInfo.id
-
+      var cate_key = params.cate_key
       var data = {
-          'student_id': this.memberInfo.student_id,
-          'basic_info_json': JSON.stringify(this.memberInfo.basic_info_json),
-          'introduction_info_json': JSON.stringify(this.memberInfo.introduction_info_json),
-          'career_info_json': JSON.stringify(this.memberInfo.career_info_json),
-          'provide_info_json': JSON.stringify(this.memberInfo.provide_info_json),
-          'abl_title_info_json': JSON.stringify(this.memberInfo.abl_title_info_json),
-          'allow_info_json': JSON.stringify(this.memberInfo.allow_info_json),
-          'advertisement_info_json': JSON.stringify(this.memberInfo.advertisement_info_json),
+          'student_id': this.$utils.myMemberInfo.student_id,
+          'updated':moment().format("YYYY-MM-DD HH:mm:ss"),
       }; 
+      data[params.cate_key] = JSON.stringify(params.cate_value)
+      // var data = {
+      //     'student_id': this.memberInfo.student_id,
+      //     'basic_info_json': JSON.stringify(this.memberInfo.basic_info_json),
+      //     'introduction_info_json': JSON.stringify(this.memberInfo.introduction_info_json),
+      //     'career_info_json': JSON.stringify(this.memberInfo.career_info_json),
+      //     'provide_info_json': JSON.stringify(this.memberInfo.provide_info_json),
+      //     'abl_title_info_json': JSON.stringify(this.memberInfo.abl_title_info_json),
+      //     'allow_info_json': JSON.stringify(this.memberInfo.allow_info_json),
+      //     'advertisement_info_json': JSON.stringify(this.memberInfo.advertisement_info_json),
+      //     'updated':moment().format("YYYY-MM-DD HH:mm:ss"),
+      // }; 
       if (aid) {
         console.log("post")
         try {
+     
           await this.$http.patch(`member/${aid}`, data)
           this.$utils.$emit("modal-alert", "저장하였습니다.");
         }
@@ -711,7 +727,11 @@ export default {
       this.memberInfo.basic_info_json.profile_image = contents
     },
     closePopupProfile() {
-      this.updateMemberInfo()
+      var params = {
+        "cate_key":"basic_info_json",
+        "cate_value":this.memberInfo.basic_info_json
+      }        
+      this.updateMemberInfo(params)
       this.profileDialog.show=false
     }
   },

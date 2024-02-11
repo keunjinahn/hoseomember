@@ -168,7 +168,23 @@
           >
           <v-row>
             <v-col cols="6">          
-              <v-text-field
+
+              <v-file-input
+                truncate-length="50"
+                color="deep-purple accent-4"
+                :placeholder="slide_file"
+                class="
+                  font-size-input
+                  placeholder-lighter
+                  text-light-input
+                  border border-radius-md
+                  mt-2
+                "              
+                @change="onChangeFile"  
+                :loading="loading"
+             ></v-file-input>
+
+              <!-- <v-text-field
                 hide-details
                 outlined
                 color="rgba(0,0,0,.6)"
@@ -183,10 +199,10 @@
                 "
                 v-model="memberInfo.introduction_info_json.slide_file"
               >
-              </v-text-field>
+              </v-text-field> -->
                
             </v-col> 
-            <v-col cols="2">
+            <!-- <v-col cols="2">
               <v-btn
                 elevation="0"
                 :ripple="false"
@@ -206,7 +222,7 @@
                 <v-icon>ni ni-archive-2 me-1</v-icon>
                 파일선택
               </v-btn>             
-            </v-col>             
+            </v-col>              -->
           </v-row>
         </v-col>          
         <v-btn
@@ -241,15 +257,37 @@ export default {
     async updateMemberInfo() {
       
       this.loading = true
-      await this.$emit("updateMemberInfo")
+      var params = {
+        "cate_key":"introduction_info_json",
+        "cate_value":this.memberInfo.introduction_info_json
+      }
+      await this.$emit("updateMemberInfo",params)
       this.loading = false
+    },
+    async onChangeFile(content) {
+      if(content != '' && content != null) {
+          this.loading = true
+          const fd = new FormData()
+          fd.append('student_id', this.memberInfo.student_id)
+          fd.append('file', content)
+          
+          let {data} = await this.$http.post('introduction_upload_file', fd)
+          if (!data || !data.result || !data.filename)
+            return this.$utils.$emit("modal-alert", "개인소개 자료 업로드 실패");
+          this.memberInfo.introduction_info_json.slide_file = data.filename
+          this.memberInfo.introduction_info_json.slide_file_src = data.filesource
+          this.slide_file = this.memberInfo.introduction_info_json.slide_file.replace(this.memberInfo.student_id + "_",'')
+          this.loading = false
+      }       
     }
   },
   mounted() {
+    this.slide_file = this.memberInfo.introduction_info_json.slide_file.replace(this.memberInfo.student_id + "_",'')
   },
   data() {
     return {
       loading: false,
+      slide_file:null,
       gender: ["Female", "Male"],
       months: [
         "January",

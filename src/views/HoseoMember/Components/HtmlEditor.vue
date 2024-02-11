@@ -2,7 +2,7 @@
   <div
     class="quill mt-3"
   > 
-    <div :id="toolbarId" :class="{'toolbar-hide':toolbar_show == false}">
+    <div :id="toolbarId" :class="{'toolbar-hide border-empty':toolbar_show == false}">
       <div class="ql-formats" v-show="toolbar_show">
         <div v-if="only_image==false">
           <button class="ql-bold"></button>
@@ -21,7 +21,7 @@
         </div>        
       </div>
     </div>
-    <div :id="editorId" :name="name" class="edit-h" ref="editor"></div>
+    <div :id="editorId" :name="name" :class="{'border-empty':toolbar_show == false}" class="edit-h" ref="editor"></div>
   </div>
 </template>
 <script>
@@ -122,5 +122,8 @@ export default {
 }
 .auto-scale {
   
+}
+.border-empty{
+  border: 0px;
 }
 </style>

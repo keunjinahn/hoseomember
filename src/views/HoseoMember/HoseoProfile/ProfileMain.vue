@@ -18,6 +18,7 @@ export default {
       let params = {
         token: token
       };
+      
       let { data } = await this.$http.post("userinfo", params);
       if (data.status == true && data.reason == 0) {
         this.$utils.user = data.user

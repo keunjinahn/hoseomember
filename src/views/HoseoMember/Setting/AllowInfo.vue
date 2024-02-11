@@ -119,8 +119,11 @@ export default {
     async updateMemberInfo() {
       
       this.loading = true
-      await this.$emit("updateMemberInfo")
-      
+      var params = {
+        "cate_key":"allow_info_json",
+        "cate_value":this.memberInfo.allow_info_json
+      }
+      await this.$emit("updateMemberInfo",params)
       this.loading = false
     },
     updateState() {

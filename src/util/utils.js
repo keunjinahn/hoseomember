@@ -18,8 +18,8 @@ const uitls = new Vue({
         },
         getWebURL() {
             // return (process.env.LOCAL_SERVER === 'Y') ? 'http://localhost:8080' : 'http://118.128.43.7:30443'
-            // return 'http://localhost:8080'
-            return 'https://abrain.hoseo.ac.kr'
+            return 'http://localhost:5000'
+            // return 'https://abrain.hoseo.ac.kr'
             // return 'http://118.128.43.7:30443'
         },
         scrollToTop() {
@@ -50,6 +50,7 @@ const uitls = new Vue({
             memberInfo: {
                 id: null,
                 student_id: '',
+                updated:null,
                 basic_info_json: {
                     name: '',
                     ename: '',
@@ -67,7 +68,8 @@ const uitls = new Vue({
                     goal: '',
                     job: '',
                     figure: '',
-                    slide_file: ''
+                    slide_file: '',
+                    slide_file_src:'',
                 },
                 career_info_json: {
                     main_career: '',

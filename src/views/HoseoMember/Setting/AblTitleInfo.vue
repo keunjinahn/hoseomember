@@ -51,7 +51,11 @@ export default {
     async updateMemberInfo() {
       
       this.loading = true
-      await this.$emit("updateMemberInfo")
+      var params = {
+        "cate_key":"abl_title_info_json",
+        "cate_value":this.memberInfo.abl_title_info_json
+      }
+      await this.$emit("updateMemberInfo",params)
       this.loading = false
     },
     updateAblTitle(contents) {

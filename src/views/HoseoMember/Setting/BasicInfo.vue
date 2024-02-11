@@ -160,10 +160,15 @@ export default {
   methods: {
     async updateMemberInfo() {
       this.loading = true
-      await this.$emit("updateMemberInfo")
+      var params = {
+        "cate_key":"basic_info_json",
+        "cate_value":this.memberInfo.basic_info_json
+      }     
+      await this.$emit("updateMemberInfo",params)
       this.loading = false
     }
   },
+ 
   mounted () {
   },
   data() {

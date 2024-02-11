@@ -230,7 +230,7 @@
     </v-card>
 
     <v-dialog v-model="profileDialog.show" max-width="1800px">
-      <v-btn fab x-big dark depressed color="grey darken-1" class="school-detail-close" @click="profileDialog.show=false">
+      <v-btn fab x-big dark depressed color="grey darken-1" class="school-detail-close" @click="onCloseProfile">
         <!-- <v-icon size="12">fas fa-times</v-icon>X -->
          <v-icon size="20">fas fa-times</v-icon>
       </v-btn>      
@@ -469,7 +469,11 @@ export default {
     onChangeaRegistType(regist_type){
       this.selected_regist_type = this.$utils.array_regist_type.find(v=>v.code == regist_type)
       this.getMemberList()
-    }   
+    },
+    onCloseProfile(){
+      this.profileDialog.show = false;
+      document.exitFullscreen()
+    }
   },
   watch: {
     dialog(val) {
