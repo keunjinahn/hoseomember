@@ -12,6 +12,13 @@
           <button class="ql-blockquote"></button>
           <button class="ql-code"></button>
           <button class="ql-image"></button>
+          <select class="ql-color">
+            <option v-for="(item,i) in COLORS" value="item"></option>
+          </select>
+          <select class="ql-background">
+            <option v-for="(item,i) in COLORS" value="item"></option>
+          </select>          
+          <select class="ql-size"></select>       
           <button type="button" class="ql-list" value="ordered"></button>
           <button type="button" class="ql-list" value="bullet"></button>
         </div>
@@ -27,6 +34,13 @@
 <script>
 import "quill/dist/quill.snow.css";
 // :class="{'auto-scale':auto_scale == true}" 
+const COLORS = [
+              "#000000", "#e60000", "#ff9900", "#ffff00", "#008A00", "#0066cc", "#9933ff",
+              "#ffffff", "#facccc", "#ffebcc", "#ffffcc", "#cce8cc", "#cce0f5", "#ebd6ff",
+              "#bbbbbb", "#f06666", "#ffc266", "#ffff66", "#66b966", "#66a3e0", "#c285ff",
+              "#888888", "#a10000", "#b26b00", "#b2b200", "#006100", "#0047b2", "#6b24b2",
+              "#444444", "#5c0000", "#663d00", "#666600", "#003700", "#002966", "#3d1466"
+            ];
 export default {
   name: "html-editor",
   props: {
@@ -63,6 +77,13 @@ export default {
         theme: "snow",
         modules: {
           toolbar: `#${this.toolbarId}`,
+          // toolbar:[
+          //   ['bold', 'italic', 'underline','link'],
+          //   [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+          //   [{ 'color': [] }, { 'background': [] }],
+          //   [{ 'align': [] }],
+          //   ['image','list'],
+          // ]
         },
       });
       if (this.value.length > 0) {
@@ -126,4 +147,5 @@ export default {
 .border-empty{
   border: 0px;
 }
+
 </style>

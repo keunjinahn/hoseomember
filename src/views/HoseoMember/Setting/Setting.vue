@@ -691,6 +691,7 @@ export default {
      
           await this.$http.patch(`member/${aid}`, data)
           this.$utils.$emit("modal-alert", "저장하였습니다.");
+          this.$utils.setSessionTmot()
         }
         catch (ex) {
           console.error('member Update Error:')
@@ -737,6 +738,12 @@ export default {
   },
   mounted() {
     // 
+    if(this.$utils.myMemberInfo.student_id==''){
+      let user = JSON.parse(sessionStorage.getItem('user'))
+      this.$utils.user = user
+      this.$utils.myMemberInfo.student_id = user.user_id
+      this.$utils.myMemberInfo.name = user.user_name
+    }  
     this.memberInfo = Object.assign({},this.$utils.memberInfo)
     this.getMemberInfo()
   },  

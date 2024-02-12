@@ -2,6 +2,40 @@ import Vue from 'vue'
 import hljs from "highlight.js";
 const uitls = new Vue({
     methods: {
+        delay (ms) {
+            return new Promise((resolve) => {
+                setTimeout(() => {
+                    resolve()
+                }, ms)
+            })
+        },
+        setToken (user) {
+            this.$http.defaults.headers.common['token'] = user.token
+            sessionStorage.setItem('user', JSON.stringify(user))
+            setTimeout(() => {
+                this.checkSessionTmot()
+            }, 1000);           
+        },
+        unsetToken () {
+            delete this.$http.defaults.headers.common['token']
+            sessionStorage.removeItem('user')
+        },
+        setSessionTmot() {
+            this.sessionTmot = 0
+            //console.log("setSessionTmot :" + this.sessionTmot)
+        },
+        checkSessionTmot() {
+            //console.log("sessionTmot :" + this.sessionTmot)
+            if (this.sessionTmot > 3600) {
+                alert('세션시간종료로 화면을 닫습니다.')
+                window.close()
+                this.$utils.unsetToken();
+            }
+            this.sessionTmot += 1
+            setTimeout(() => {
+                this.checkSessionTmot()
+            }, 1000);
+        },        
         splitProfessor(names) {
             let res = names ? names.split(',').map(v => v.trim()) : ['', '', '', '']
             if (res.length < 4) {
@@ -18,8 +52,8 @@ const uitls = new Vue({
         },
         getWebURL() {
             // return (process.env.LOCAL_SERVER === 'Y') ? 'http://localhost:8080' : 'http://118.128.43.7:30443'
-            return 'http://localhost:5000'
-            // return 'https://abrain.hoseo.ac.kr'
+            //return 'http://localhost:5000'
+            return 'https://abrain.hoseo.ac.kr'
             // return 'http://118.128.43.7:30443'
         },
         scrollToTop() {
@@ -42,6 +76,7 @@ const uitls = new Vue({
     },
     data() {
         return {
+            sessionTmot:0,
             user: null,
             myMemberInfo: {
                 student_id: '',

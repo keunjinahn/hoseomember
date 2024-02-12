@@ -140,8 +140,8 @@
           <template v-slot:item.name="{ item }">
             <div class="d-flex align-center">
               <v-avatar width="32" height="32" class="shadow border-radius-lg">
-                <img v-if="item.profile_image"
-                  :src="$utils.parse_img_data(item.profile_image)"
+                <img v-if="JSON.parse(item.basic_info_json) !='' && JSON.parse(item.basic_info_json).profile_image != ''"
+                  :src="$utils.parse_img_data(JSON.parse(item.basic_info_json).profile_image)"
                   alt="Avatar"
                   class="border-radius-lg"
                 />
@@ -179,7 +179,7 @@
               color="#fff"
               class="font-weight-bolder bg-gradient-primary py-4 px-7"
               small
-              :disabled="selected_regist_type.code == 1"
+              :disabled="selected_regist_type.code == 1 || item.basic_info_json == ''"
               @click="showProfileDialog(item)"
             >
               <v-icon size="12">fa-solid fa-address-card pe-2</v-icon> 프로필보기
@@ -387,7 +387,7 @@ export default {
   mounted () {
     this.selected_grade_type = this.$utils.array_grade_type[0]
     this.selected_degree_type = this.$utils.array_degree_type[0]
-    this.selected_regist_type = this.$utils.array_regist_type[0]
+    this.selected_regist_type = this.$utils.array_regist_type[2]
     this.getMemberList()
   },
   methods: {
@@ -412,6 +412,7 @@ export default {
         });
         this.pageCount =  Math.trunc(data.num_results / this.itemsPerPage) + 1
         this.table.loading = false
+        this.$utils.setSessionTmot()
       } catch (ex) {
         console.error('member Update Error:')
         console.error(ex)        

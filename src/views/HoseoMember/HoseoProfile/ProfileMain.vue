@@ -21,6 +21,7 @@ export default {
       
       let { data } = await this.$http.post("userinfo", params);
       if (data.status == true && data.reason == 0) {
+        this.$utils.setToken(data.user)
         this.$utils.user = data.user
         this.$utils.myMemberInfo.student_id = data.user.user_id
         this.$utils.myMemberInfo.name = data.user.user_name
@@ -31,9 +32,13 @@ export default {
     },
   },
   mounted() {
-    if(this.$route.query.data == undefined){
-      this.$utils.myMemberInfo.student_id = '20235588'
-      this.$utils.myMemberInfo.name = '이인희'
+    
+    if(this.$utils.myMemberInfo.student_id=='' && this.$route.query.data == undefined){
+      let user = JSON.parse(sessionStorage.getItem('user'))
+      this.$utils.user = user
+      this.$utils.myMemberInfo.student_id = user.user_id
+      this.$utils.myMemberInfo.name = user.user_name
+      this.$utils.setSessionTmot()
     }
     else {
       var token = window.atob(this.$route.query.data)

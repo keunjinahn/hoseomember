@@ -875,7 +875,7 @@ export default {
           this.memberInfo.advertisement_info_json = JSON.parse(memberInfo.advertisement_info_json)
         }
         this.memberInfo.id = memberInfo.id
-
+        this.$utils.setSessionTmot()
       } catch (ex) {
         console.error('member Update Error:')
         console.error(ex)
