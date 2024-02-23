@@ -172,7 +172,12 @@
             <span class="text-sm font-weight-normal text-body">
               {{ (item.degree_type == 1)? '석사':'박사'}}
             </span>
-          </template>          
+          </template>       
+          <template v-slot:item.grade="{ item }">
+            <span class="text-sm font-weight-normal text-body">
+              {{ (item.grade == 0)? '-':item.grade}}
+            </span>
+          </template>              
           <template v-slot:item.actions="{ item }">
             <v-btn
               outlined

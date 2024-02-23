@@ -166,11 +166,6 @@ export default {
           switchState: false,
           text: "이메일 주소",
         },
-        {
-          switchState: false,
-          text: "현재직업",
-        },
-   
       ],      
       myInfo: {
           switchState: false,

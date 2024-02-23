@@ -194,7 +194,7 @@
             :style="`background-image: url(${require('../../../assets/img/\hoseomember/title.png')}); background-position: 100%; background-size: cover;`"
             >   
               <h5 class="mb-1 text-h2 font-weight-bold  main-title">
-                3. GIVE & TAKE
+                2. GIVE & TAKE
               </h5>   
           </div>
           <div  class="sub-block" >    
