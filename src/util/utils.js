@@ -17,6 +17,7 @@ const uitls = new Vue({
             }, 1000);           
         },
         unsetToken () {
+            alert(unsetToken)
             delete this.$http.defaults.headers.common['token']
             sessionStorage.removeItem('user')
         },
@@ -51,11 +52,11 @@ const uitls = new Vue({
             return img_data
         },
         getWebURL() {
-            // return (process.env.LOCAL_SERVER === 'Y') ? 'http://localhost:8080' : 'http://118.128.43.7:30443'
-            //return 'http://localhost:5000'
-            return 'https://abrain.hoseo.ac.kr'
-            // return 'http://118.128.43.7:30443'
+            return process.env.NODE_ENV === 'development'? 'http://localhost:8080':'https://abrain.hoseo.ac.kr'
         },
+        getApiURL() {
+            return process.env.NODE_ENV === 'development'? 'http://localhost:5000':'https://abrain.hoseo.ac.kr'
+        },    
         scrollToTop() {
             // window.scrollTo(x좌표, y좌표)
             window.scrollTo(0, 0);

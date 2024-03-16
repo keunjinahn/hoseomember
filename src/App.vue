@@ -22,14 +22,32 @@ export default {
       this.dialog.show = params.show
       this.dialog.message = params.message || ''
     })
+    // window.addEventListener('beforeunload', this.unLoadEvent);
   },
+  // methods: {
+  //   unLoadEvent: function (event) {
+  //     if (this.canLeaveSite){
+  //       this.$route.push('/hoseomember/hoseoprofile/profilemain')
+  //       return;
+  //     } 
+  //     event.preventDefault();
+  //     event.returnValue = '';
+      
+  //   },
+  // },
+  // beforeUnmount() {
+  //   window.removeEventListener('beforeunload', this.unLoadEvent);
+  // },
+
   data () {
     return {
       dialog: {
         show: false,
         message: ''
-      }
+      },
+      // canLeaveSite:true
     }
-  }
+  },
 }
+
 </script>

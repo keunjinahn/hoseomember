@@ -94,12 +94,16 @@
         <v-data-table
           :headers="table.headers"
           :items="table.users"
-          class="table"
-          :page.sync="page"
+          class="table "
+          :options.sync="table.options"
           hide-default-footer
-          @page-count="pageCount = $event"
-          :items-per-page="itemsPerPage"
+          :server-items-length="table.total"
+          :items-per-page="10"
+          :footer-props="{'items-per-page-options': [10,20,60,-1]}"
           mobile-breakpoint="0"
+          @click:row="rowClick"
+          item-key="_index" 
+          single-select
         >
           <!-- <template v-slot:top>
             <v-toolbar flat height="80">
@@ -151,21 +155,25 @@
                   class="border-radius-lg"
                 />                
               </v-avatar>              
-              <span class="text-sm font-weight-normal text-body text-left-margin-5">
+              <span class="text-sm font-weight-normal text-body text-left-margin-5 name-with" >
                 {{ item.name}}
               </span>
             </div>
           </template>
 
           <template v-slot:item.email="{ item }">
-            <span class="text-sm font-weight-normal text-body">
-              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y' || selected_regist_type.code == 1)? item.email :'****'}}
+            <span class="text-sm font-weight-normal text-body" v-if="small_layout == false">
+              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y')? item.email :'****'}}
             </span>
           </template>
-
-          <template v-slot:item.phone_number="{ item }">
+          <template v-slot:item.company="{ item }">
             <span class="text-sm font-weight-normal text-body">
-              {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y' || selected_regist_type.code == 1 )? item.phone_number :'****'}}
+              {{ item.company}}
+            </span>
+          </template>   
+          <template v-slot:item.phone_number="{ item }" >
+            <span class="text-sm font-weight-normal text-body" v-show="small_layout == false">
+              {{ (JSON.parse(item.allow_info_json).allow_phone_number == 'Y')? item.phone_number :'****'}}
             </span>
           </template>
           <template v-slot:item.degree_type="{ item }">
@@ -173,11 +181,26 @@
               {{ (item.degree_type == 1)? '석사':'박사'}}
             </span>
           </template>       
+          
           <template v-slot:item.grade="{ item }">
             <span class="text-sm font-weight-normal text-body">
               {{ (item.grade == 0)? '-':item.grade}}
             </span>
-          </template>              
+          </template>       
+          <template v-slot:item.slide_file_src="{ item }">
+
+            <v-btn
+              outlined
+              color="#fff"
+              class="font-weight-bolder bg-gradient-primary py-4 px-7"
+              small
+              :disabled="item.slide_file_src.length < 10"
+              @click="slide_file_download(item.slide_file_src,item.name)"
+            >
+              <v-icon size="12">fa-solid fa-download pe-2</v-icon> 다운로드
+            </v-btn>
+          </template>            
+               
           <template v-slot:item.actions="{ item }">
             <v-btn
               outlined
@@ -291,6 +314,7 @@
 </template>
 <script>
 import ProfileComponent from "../HoseoProfile/ProfileComponent.vue";
+import axios from 'axios'
 export default {
   name: "paginated-tables",
   components: {
@@ -298,6 +322,7 @@ export default {
   },  
   data() {
     return {
+      small_layout:false,
       page: 1,
       pageCount: 0,
       itemsPerPage: 10,
@@ -330,7 +355,7 @@ export default {
         users: [],
         loading: false,
         total: 0,
-        options: {},
+        options: {"page":1,"itemsPerPage":10,"sortBy":[],"sortDesc":[],"groupBy":[],"groupDesc":[],"mustSort":false,"multiSort":false},
         headers: [
           {
             text: "순번",
@@ -344,7 +369,7 @@ export default {
             text: "원우이름",
             align: "start",
             cellClass: "border-bottom",
-            sortable: true,
+            sortable: false,
             value: "name",
             class: "text-secondary font-weight-bolder opacity-7 border-bottom",
           },
@@ -357,12 +382,12 @@ export default {
           {
             text: "기수",
             value: "grade",
-            sortable: true,
+            sortable: false,
             class: "text-secondary font-weight-bolder opacity-7",
           },
           {
             text: "학위",
-            sortable: true,
+            sortable: false,
             value: "degree_type",
             class: "text-secondary font-weight-bolder opacity-7",
           },         
@@ -379,6 +404,12 @@ export default {
             class: "text-secondary font-weight-bolder opacity-7",
           },        
           {
+            text: "소개자료",
+            value: "slide_file_src",
+            sortable: false,
+            class: "text-secondary font-weight-bolder opacity-7",
+          },             
+          {
             text: "Actions",
             value: "actions",
             sortable: false,
@@ -390,19 +421,26 @@ export default {
      };
   },
   mounted () {
+    window.addEventListener('resize', this.handleResize);
     this.selected_grade_type = this.$utils.array_grade_type[0]
     this.selected_degree_type = this.$utils.array_degree_type[0]
     this.selected_regist_type = this.$utils.array_regist_type[2]
     this.getMemberList()
+    
   },
   methods: {
+    handleResize(event) {
+      console.log("window size : " + window.innerWidth + ", " + window.innerHeight)
+      if(window.innerWidth < 1500) 
+        this.small_layout = true
+      else this.small_layout = false
+    },
     async getMemberList() {
       try {
         let filters = [];
         this.table.loading = true
-
         let params = {
-          offset: ((this.page-1) * this.itemsPerPage),
+          offset: (this.page -1) * this.itemsPerPage,
           limit: this.itemsPerPage,
           querystring:this.filter.querystring,
           grade_type:this.selected_grade_type.code,
@@ -413,6 +451,7 @@ export default {
         this.table.total = data.num_results
         this.table.users = data.objects.map((v, i) => {
             v._index = i + (this.page - 1) * this.itemsPerPage + 1;
+            v.slide_file_src = v.slide_file_src
             return v;
         });
         this.pageCount =  Math.trunc(data.num_results / this.itemsPerPage) + 1
@@ -479,7 +518,30 @@ export default {
     onCloseProfile(){
       this.profileDialog.show = false;
       document.exitFullscreen()
-    }
+    },
+    async slide_file_download(slide_file_src,name) {
+      var url = this.$utils.getApiURL() + '/api/v1/introduction_upload_file/' + slide_file_src
+      axios({
+        method: 'get',
+        url:url,
+        responseType: 'blob'
+      })
+      .then(response => {
+        const url = window.URL.createObjectURL(new Blob([response.data], {
+          type: 'application/vnd.ms-excel'
+        }))
+        const link = document.createElement('a')
+        link.href = url
+        var download_file_name = name + '_'+ slide_file_src
+        link.setAttribute('download', download_file_name) // or any other extension
+        document.body.appendChild(link)
+        link.click()
+      })
+      .catch(() => console.log('error occured'))
+    },    
+    rowClick(item, row) {      
+      row.select(true);
+    }    
   },
   watch: {
     dialog(val) {
@@ -488,7 +550,7 @@ export default {
     dialogDelete(val) {
       val || this.closeDelete();
     },
-    'table.options': {
+    'page': {
         handler () {
             this.getMemberList()
         },
@@ -504,14 +566,15 @@ export default {
         ? Math.trunc(Math.ceil(this.table.total / this.pagination.rowsPerPage))
         : 0;
     },
-  },
+  }
 };
 </script>
 <style lang="scss" scoped>
 .school-detail-close {
   position: absolute;
-  top: 70px; left: 7%;
+  top: 70px; left:48%;
   z-index: 10;
+  
 }
 .school-detail-container {
   position: relative;
@@ -522,5 +585,15 @@ export default {
 .boder-1{
   border: 1px solid gray;
   margin:0px 20px;
+}
+.name-with{
+  min-width: 80px;
+}
+
+tr.v-data-table__selected {
+  background: white !important;
+}
+.m-over {
+  cursor: pointer;
 }
 </style>

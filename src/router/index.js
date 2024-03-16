@@ -55,15 +55,6 @@ let accountPages = {
 };
 
 const routes = [
-  {
-    path: "/",
-    name: "Dashboard",
-    redirect: "/hoseomember/hoseoprofile/profilemain",
-    component: DashboardLayout,
-    children: [
-     ],
-  },
- 
   accountPages,
 ];
 

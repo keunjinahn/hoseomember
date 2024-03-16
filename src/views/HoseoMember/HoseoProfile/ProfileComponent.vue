@@ -202,18 +202,6 @@
           <div  class="body-1-block overflow-hidden" >    
             <v-row>
               <v-col cols="12">
-                <div class="body-1-title ">
-                  <h5 class="mb-1 text-h5 text-typo font-weight-bold  ">
-                    TAKE (내가 받고자 하는 도움)
-                  </h5>              
-                </div>
-                <div class="body-introduce-block border-radius-lg">
-                  <div class="px-4 py-4">
-                    <p class="text-sm text-body">
-                      <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.give_info"></html-editor>
-                    </p>
-                  </div>                        
-                </div>        
                 <div class="body-1-title">
                   <h5 class="mb-1 text-h5 text-typo font-weight-bold  ">
                     GIVE (내가 줄 수 있는 도움)
@@ -222,10 +210,23 @@
                 <div class="body-career-block border-radius-lg">
                   <div class="px-4 py-4">
                     <p class="text-sm text-body">
-                      <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.take_info"></html-editor>
+                      <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.give_info"></html-editor>
                     </p>
                   </div>             
-                </div>                 
+                </div>                
+              
+                <div class="body-1-title ">
+                  <h5 class="mb-1 text-h5 text-typo font-weight-bold  ">
+                    TAKE (내가 받고자 하는 도움)
+                  </h5>              
+                </div>
+                <div class="body-introduce-block border-radius-lg">
+                  <div class="px-4 py-4">
+                    <p class="text-sm text-body">
+                      <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.take_info"></html-editor>
+                    </p>
+                  </div>                        
+                </div>                      
               </v-col >        
             </v-row>
           </div>      
@@ -458,26 +459,11 @@
               </div>
               <div class="px-4 pt-4">
                 <h6 class="mb-0 text-h6 text-typo font-weight-bold">
-                  * 주요경력
-                </h6>
-              </div>
-              <div class="px-4 py-4">
-                <p class="text-sm text-body">
-                  <html-editor  :toolbar_show="false" :value="memberInfo.career_info_json.main_career"></html-editor>
-                </p>
-              </div>              
-            </v-card>
-          </v-col>
-          <v-col :cols="page_type" >
-            <v-card class="card-shadow border-radius-xl h-100" >
-              <div class="px-4 pt-4">
-                <h6 class="mb-0 text-h6 text-typo font-weight-bold">
                   * 제공 가능한 정보(Give)
                 </h6>
               </div>
               <div class="px-4 py-4">
-                
-                <p class="text-sm text-body">
+                <p class="text-sm text-body font-weight-bold">
                   <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.give_info"></html-editor>
                 </p>
               </div>       
@@ -487,10 +473,25 @@
                 </h6>
               </div>
               <div class="px-4 py-4">
-                <p class="text-sm text-body">
+                <p class="text-sm text-body font-weight-bold">
                   <html-editor  :toolbar_show="false" :value="memberInfo.provide_info_json.take_info"></html-editor>
                 </p>
               </div>              
+            </v-card>
+          </v-col>
+          <v-col :cols="page_type" >
+            <v-card class="card-shadow border-radius-xl h-100" >
+              <div class="px-4 pt-4">
+                <h6 class="mb-0 text-h6 text-typo font-weight-bold">
+                  * 주요경력
+                </h6>
+              </div>
+              <div class="px-4 py-4">
+                <p class="text-sm text-body font-weight-bold">
+                  <html-editor  :toolbar_show="false" :value="memberInfo.career_info_json.main_career"></html-editor>
+                </p>
+              </div>               
+                           
             </v-card>
           </v-col>
           <v-col :cols="page_type" v-show="$utils.isMyProfile(memberInfo.student_id)">
@@ -609,14 +610,14 @@
               <div class="px-4 pt-4">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">ABL 주제</h6>
               </div>
-              <div class="px-1 py-1">
+              <div class="px-1 py-1 font-weight-bold" >
                 <html-editor  :toolbar_show="false" :value="memberInfo.abl_title_info_json.abl_title"></html-editor>
               </div>
             </v-card>
           </v-col>
           <v-col cols="6">
             <v-card class="card-shadow border-radius-xl  min-height-300">
-              <div class="px-4 pt-4">
+              <div class="px-4 pt-4 font-weight-bold">
                 <h6 class="mb-1 text-typo text-h6 font-weight-bold">광고 및 소개</h6>
               </div>
               <v-row>
@@ -851,6 +852,7 @@ export default {
         let q = JSON.stringify({ filters });
         let params = { q };
         let { data } = await this.$http.get("member", { params });
+        
         let memberInfo = data.objects.find(v => v.student_id == this.memberInfo.student_id)
         if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
           this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)
@@ -983,7 +985,7 @@ export default {
       this.messageInfo.message = item.message
     },
     async slide_file_download() {
-      var url = this.$utils.getWebURL() + '/api/v1/introduction_upload_file/' + this.memberInfo.introduction_info_json.slide_file_src
+      var url = this.$utils.getApiURL() + '/api/v1/introduction_upload_file/' + this.memberInfo.introduction_info_json.slide_file_src
       axios({
         method: 'get',
         url:url,
@@ -995,7 +997,7 @@ export default {
         }))
         const link = document.createElement('a')
         link.href = url
-        var download_file_name = this.memberInfo.introduction_info_json.slide_file
+        var download_file_name = this.memberInfo.basic_info_json.name + '_' + this.memberInfo.introduction_info_json.slide_file
         link.setAttribute('download', download_file_name) // or any other extension
         document.body.appendChild(link)
         link.click()
@@ -1328,4 +1330,8 @@ tr {
         text-align: center;
         box-sizing: border-box;
         color: #fff;}
+.text-c-bold{
+  font-weight: bold !important;
+  color:black !important
+}
 </style>

@@ -238,4 +238,5 @@ export default {
 .border-right-c{
   border-right: 1px solid #dedede;
 }
+
 </style>

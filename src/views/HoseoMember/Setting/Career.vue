@@ -76,7 +76,7 @@
           @click="updateMemberInfo"
           
         >
-          저장하기
+        임시 저장
         </v-btn>
       </v-row>        
     </div>

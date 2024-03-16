@@ -470,7 +470,25 @@
                 </v-list-item>
               </v-list-item-group>
             </v-list>
+            <div>
+              <v-btn
+              @click="check_complete()"
+              elevation="1"
+              :ripple="false"
+              height="43"
+              class="
+                font-weight-bold
+                text-capitalize
+                btn-ls btn-primary
+                bg-gradient-primary
+                py-3
+                px-10
+                btn-align
+              "
+              >최종저장</v-btn>
+            </div>
           </div>
+
         </v-card>
       </v-col>
       <v-col lg="9">
@@ -514,7 +532,9 @@
         <allow-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></allow-info>   
         <advertisement-info @updateMemberInfo="updateMemberInfo" :memberInfo="memberInfo" v-if="loading"></advertisement-info>   
       </v-col>
+
     </v-row>
+
     <v-dialog v-model="profileDialog.show" max-width="300px">
       <v-card class="card-shadow card-padding border-radius-xl">
         <v-card-title class="pt-0 text-h5 text-typo justify-center"
@@ -609,7 +629,6 @@ export default {
           this.memberInfo.basic_info_json.email = (this.$utils.user.email != null)? this.$utils.user.email:''
         }else{
           let memberInfo = data.objects.find(v => v.student_id == this.$utils.myMemberInfo.student_id)
-       
           if (memberInfo.basic_info_json != undefined && memberInfo.basic_info_json.length > 5) {
             this.memberInfo.basic_info_json = JSON.parse(memberInfo.basic_info_json)  
           }
@@ -641,7 +660,7 @@ export default {
         
       } catch (ex) {
         console.error('member Update Error:')
-        console.error(ex)        
+        console.error(ex)   
       } finally {
         this.loading = true
         this.switchChange()
@@ -734,19 +753,148 @@ export default {
       }        
       this.updateMemberInfo(params)
       this.profileDialog.show=false
-    }
+    },
+    check_complete(){
+      if(this.memberInfo.basic_info_json.name.length < 3) {
+        this.$utils.$emit("modal-alert","[기본정보] 이름을 입력해주세요!");
+        return
+      }
+      if(this.memberInfo.basic_info_json.phone_number.length < 11) {
+        this.$utils.$emit("modal-alert","[기본정보] 전화번호를 입력해주세요!");
+        return
+      }     
+      if(this.memberInfo.basic_info_json.email.length < 5) {
+        this.$utils.$emit("modal-alert","[기본정보] 이메일을 입력해주세요!");
+        return
+      }      
+      if(this.memberInfo.basic_info_json.company.length < 2) {
+        this.$utils.$emit("modal-alert","[기본정보] 회사명을 입력해주세요!");
+        return
+      }     
+      if(this.memberInfo.basic_info_json.department.length < 2) {
+        this.$utils.$emit("modal-alert","[기본정보] 부서명을 입력해주세요!");
+        return
+      }           
+      //////////////////////////////////////
+      if(this.memberInfo.introduction_info_json.specialty.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 개인특기를 입력해주세요!");
+        return
+      }
+      if(this.memberInfo.introduction_info_json.hobby.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 취미를 입력해주세요!");
+        return
+      }     
+      if(this.memberInfo.introduction_info_json.motto.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 좌우명을 입력해주세요!");
+        return
+      }       
+      if(this.memberInfo.introduction_info_json.job.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 현재직업을 입력해주세요!");
+        return
+      }          
+      if(this.memberInfo.introduction_info_json.motivation.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 대학원 진학 동기를 입력해주세요!");
+        return
+      }        
+      if(this.memberInfo.introduction_info_json.goal.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 대학원 과정에서 이루고자 하는 목표를 입력해주세요!");
+        return
+      }       
+      if(this.memberInfo.introduction_info_json.figure.length < 3) {
+        this.$utils.$emit("modal-alert","[자기소개] 졸업 후에 원하는 자신의 모습을 입력해주세요!");
+        return
+      }            
+      //////////////////////////////////////
+      if(this.memberInfo.career_info_json.main_career.length < 5) {
+        this.$utils.$emit("modal-alert","[주요경력] 주요경력을 입력해주세요!");
+        return
+      }        
+      //////////////////////////////////////
+      if(this.memberInfo.provide_info_json.give_info.length < 5) {
+        this.$utils.$emit("modal-alert","[제공정보] 제공 가능한 정보(Give)를 입력해주세요!");
+        return
+      }         
+      if(this.memberInfo.provide_info_json.take_info.length < 5) {
+        this.$utils.$emit("modal-alert","[제공정보] 제공받고자 하는 정보(Take)를 입력해주세요!");
+        return
+      }
+      //////////////////////////////////////
+      if(this.memberInfo.abl_title_info_json.abl_title.length < 5) {
+        this.$utils.$emit("modal-alert","[ABL 주제] ABL 주제를 입력해주세요!");
+        return
+      }       
+      this.updataAllMemberInfo();
+    },
+    async updataAllMemberInfo () {
+      // validate
+      let results = []
+      if(this.$utils.myMemberInfo.student_id == ''){
+        this.$utils.$emit("modal-alert", "정보 매칭 오류로 조회 실패하였습니다.");
+        return
+      }
+ 
+      let aid = this.memberInfo.id
+      var data = {
+          'student_id': this.memberInfo.student_id,
+          'basic_info_json': JSON.stringify(this.memberInfo.basic_info_json),
+          'introduction_info_json': JSON.stringify(this.memberInfo.introduction_info_json),
+          'career_info_json': JSON.stringify(this.memberInfo.career_info_json),
+          'provide_info_json': JSON.stringify(this.memberInfo.provide_info_json),
+          'abl_title_info_json': JSON.stringify(this.memberInfo.abl_title_info_json),
+          'allow_info_json': JSON.stringify(this.memberInfo.allow_info_json),
+          'advertisement_info_json': JSON.stringify(this.memberInfo.advertisement_info_json),
+          'updated':moment().format("YYYY-MM-DD HH:mm:ss"),
+      }; 
+      if (aid) {
+        console.log("post")
+        try {
+     
+          await this.$http.patch(`member/${aid}`, data)
+          this.$utils.$emit("modal-alert", "최종 입력이 완료되었습니다.");
+          this.$utils.setSessionTmot()
+        }
+        catch (ex) {
+          console.error('member Update Error:')
+          console.error(ex)
+          results.push('member Update Error:')
+          results.push(ex.message)
+        }
+        finally {
+
+        }
+      }
+      else {
+          try {
+            let new_res = await this.$http.post('member', data)
+              if(new_res.status == 202){
+                alert("잘못된 호출입니다.")
+                return
+              }
+              this.memberInfo.id = new_res.data.id
+              this.$utils.$emit("modal-alert","최종 입력이 완료되었습니다.");    
+          }
+          catch (ex) {
+              results.push('신규입력 Error:')
+              results.push(ex.message)
+          }
+          finally {
+            
+          }
+      }
+    },
+
   },
   mounted() {
     // 
     if(this.$utils.myMemberInfo.student_id==''){
-      let user = JSON.parse(sessionStorage.getItem('user'))
+      let user = JSON.parse(sessionStorage.getItem('huser'))
       this.$utils.user = user
       this.$utils.myMemberInfo.student_id = user.user_id
       this.$utils.myMemberInfo.name = user.user_name
     }  
     this.memberInfo = Object.assign({},this.$utils.memberInfo)
     this.getMemberInfo()
-  },  
+  },
   data() {
     return {
       memberInfo: null,      
@@ -762,6 +910,11 @@ export default {
 <style lang="scss" scoped>
 .v-face-cursor {
   cursor: pointer;
+
+}
+.btn-align{
+  width: 80%;
+  margin: auto;
 
 }
 </style>

@@ -36,4 +36,11 @@ new Vue({
   router,
   vuetify,
   render: (h) => h(App),
+  // watch:{
+  //   '$route' (to){
+  //     if(to.meta.reload == true){
+
+  //     }
+  //   }
+  // }
 }).$mount("#app");
