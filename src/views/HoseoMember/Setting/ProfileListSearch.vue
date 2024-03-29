@@ -163,7 +163,7 @@
 
           <template v-slot:item.email="{ item }">
             <span class="text-sm font-weight-normal text-body" v-if="small_layout == false">
-              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y')? item.email :'****'}}
+              {{ (JSON.parse(item.allow_info_json).allow_email == 'Y')? getTrimString(item.email,30) :'****'}}
             </span>
           </template>
           <template v-slot:item.company="{ item }">
@@ -505,14 +505,17 @@ export default {
     },
     onChangeaGradeType(grade_type){
       this.selected_grade_type = this.$utils.array_grade_type.find(v=>v.code == grade_type)
+      this.page = 1
       this.getMemberList()
     },
     onChangeaDegreeType(degree_type){
       this.selected_degree_type = this.$utils.array_degree_type.find(v=>v.code == degree_type)
+      this.page = 1
       this.getMemberList()
     },
     onChangeaRegistType(regist_type){
       this.selected_regist_type = this.$utils.array_regist_type.find(v=>v.code == regist_type)
+      this.page = 1
       this.getMemberList()
     },
     onCloseProfile(){
@@ -541,7 +544,12 @@ export default {
     },    
     rowClick(item, row) {      
       row.select(true);
-    }    
+    },
+    getTrimString(msg,pageCount){
+      if(msg!= undefined && msg.length > pageCount)
+        return msg.substring(1,pageCount) + "..."
+      return msg
+    }  
   },
   watch: {
     dialog(val) {
